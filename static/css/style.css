@@ -1,0 +1,177 @@
+body{
+	font-family: 'Roboto', sans-serif;
+}
+.logo{
+	text-align: center;
+}
+.logo > img{
+	height: 130px;
+}
+.logo > a > img{
+	height: 130px;
+}
+.separadorTitulo{
+	border-top: solid 2px #555;
+}
+.tituloPrincipal{
+	text-align: center;
+}
+.separadorThumbnails{
+	border-top: solid 1px #555;
+}
+.thumbnails{
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+.thumbnails > .imagen > img{
+	padding-top: 10px;
+	width: 100%;
+}
+
+.thumbnails > .texto > .titulo{
+	
+}
+.thumbnails > .texto > .autor{
+	text-align: right;
+}
+.thumbnails > .texto > .resumen{
+	
+}
+
+.vertical-align {
+    display: flex;
+    align-items: center;
+}
+
+a{
+	color: initial;
+}
+
+a:hover{
+	text-decoration: none;
+	color: #888 !important;
+}
+
+a:visited {
+    text-decoration: none;
+    color: initial;
+}
+a:active {
+    text-decoration: none;
+	color: dimgray;
+}
+a:link {
+    text-decoration: none;
+    color: #555;
+}
+
+.modal-title{
+	text-align: center;
+}
+.modalSocial > a > img{
+	width: 100%;
+}
+.modalSocial > a > img:hover{
+	opacity: 0.9;
+}
+.modalSocial{
+	border-right: 1px solid #555;
+}
+
+.modalFormulario{
+	border-left: 1px solid #555;
+}
+
+.text-aling-right{
+	text-align: right;
+}
+.row-completo{
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: -ms-flexbox;
+	display:         flex;
+	flex-wrap: wrap;
+}
+.modal-header{
+	border-bottom: 2px solid #555;
+}
+.usuario{
+	text-align: right;
+}
+
+.usuario > h4 > a > img{
+	height: 20px
+}
+
+.userLector{
+	padding: 0px 80px;
+	border-bottom: none;
+}
+
+.userLector > li > a{
+	border-radius: 0;
+
+}
+
+.userLector > .active > a{
+	border: 1px solid rgb(221, 221, 221) !important;
+	color:#333 !important;
+	background-color: whitesmoke !important;
+
+}
+.userLector > li > a:hover{
+	border: 0 !important;
+
+}
+
+.userLector > .active > a:hover{
+	border: 1px solid rgb(221, 221, 221) !important;
+}
+
+.userLector > li{
+	margin-bottom: 0;
+	padding:0;
+	padding-top: 10px;
+
+}
+
+
+
+.agrupar{
+	text-align: right;
+	padding-top: 8px;
+	padding-right: 0;
+}
+
+.paddingTop{
+	padding-top: 6px;
+}
+
+.articulo > img{
+	float: right;
+	width: 48%;
+}
+.floatDerecha{
+	float: right;
+}
+.tituloArticulo{
+	padding-bottom: 10px;
+}
+.iconoUser > img{
+	width: 100%;
+	padding-top: 16px;
+}
+
+ .subComentario > .iconoUser > img{
+	padding-top: 18px;
+}
+
+.comentarios{
+	border: solid 2px #777;
+	padding: 15px;
+}
+.separadorComentario{
+	border-top: solid 2px #777;
+	margin: 10px 0px;
+	padding: 0;
+}

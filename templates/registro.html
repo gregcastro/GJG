@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Registrarse</title>
+	{% include "head.html" %}
+</head>
+<body>
+	<div id="wrapper">
+		{% include "sidebar.html" %} 
+
+		<div class="container" id="page-content-wrapper">
+			<div class="row ">
+				<a href="#menu-toggle" class="btn btn-default" id="menu-toggle">Menu</a>
+				
+				<div class="col-md-12 text-center logo">
+					<img src="{{ url_for('static', filename='imagenes/registrate.jpg') }}">
+				</div>
+
+			</div>
+			<div class="separadorTitulo"></div>
+			
+			<div class="row">
+				<div class="col-md-3"></div>
+				<div class="col-md-6">
+					{{current_user}}
+					{% if registrado is defined %}
+    				<p class="text-center">{{registrado}}</p>
+        			<div class="text-center">
+        				<a href="#" data-toggle="modal" data-target="#LoginModal">Iniciar Sesión</a>
+        			</div>
+
+        			{% elif error is defined %}
+        				<p class="text-center" style="color:red;">{{error}}</p>
+         			{% endif %}
+
+
+
+					<h1>Registro</h1>
+					<form id="form-login" action="/signup" method="post" data-toggle="validator">
+						<div class="row">
+							<div class="col-md-6">
+								<p><label for="nombre">Nombre:</label></p>
+								<p><input name="nombre" type="text" id="nombre" class="form-control" placeholder="Nombres" autofocus=""/ ></p>
+								<p><label for="rif">Rif:</label></p>
+								<p><input name="rif" type="text" id="rif" class="form-control" placeholder="Ej. 18545750" /></p>
+								
+								<p><label for="correo">Correo:</label></p>
+								<p><input name="correo" type="email" id="correo" class="form-control" placeholder="Correo Electrónico" /></p>
+							</div>
+							<div class="col-md-6">
+								<p><label for="pass">Contraseña:</label></p>
+								<p><input name="password" type="password" id="pass" class="form-control" placeholder="Contraseña"/ required="true"></p>
+								
+								<p><label for="repass">Repetir Contraseña:</label></p>
+								<p><input name="repassword" type="password" id="repass" class="form-control" placeholder="Repite contraseña" data-match="#pass" required="true"/></p>
+				
+
+								<p><label for="codPostal">Código Postal:</label></p>
+								<p><input name="codPostal" type="text" id="codPostal" class="form-control" placeholder="Ej. 1060" autofocus=""/ ></p>
+
+								<p class="text-right"><input type="checkbox" required="true" name="TyC" value="TyC" class="form-control checkbox" data-match-error="Contraseña incorrecta" >
+								<b>Acepto los términos y condiciones de uso</b><br></p>
+								<p id="bot"><button class="btn btn-info" type="submit">Registrarse</button></p>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Modal LOGIN-->
+	{% include "modal_login.html" %} 
+	
+	<!-- Menu Toggle Script -->
+	<script>
+	$("#menu-toggle").click(function(e) {
+	    e.preventDefault();
+	    $("#wrapper").toggleClass("toggled");
+	});
+	</script>
+</body>
+</html>

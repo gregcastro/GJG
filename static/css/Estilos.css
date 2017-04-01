@@ -1,0 +1,17 @@
+#bot {
+	margin-top: 10px;
+	margin-left: 30%;
+	text-align: right;
+}
+
+#bot2 {
+	margin-left: 80%;
+}
+.checkbox{
+    height: auto;
+    width: auto;
+    vertical-align: top;
+    display: -webkit-inline-box;
+    padding-right: 9px;
+    margin: 4px !important;
+}
