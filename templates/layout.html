@@ -1,0 +1,156 @@
+<!doctype html>
+<html>
+  <head>
+    {% block head %}
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, shrink-to-fit=no, initial-scale=1">
+      <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+      <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+      <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+      <link rel="stylesheet" href="{{ url_for('static', filename='css/simple-sidebar.css') }}">
+      <script src="{{ url_for('static', filename='js/jquery.js') }}"></script>
+      <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+      {% block extra_head %} 
+
+      {% endblock %}
+
+      <title>{% block title %} GJG C.A {% endblock %}</title>
+    
+    {% endblock %}
+  </head>
+  <body>
+
+    <div id="wrapper">
+      <!-- Sidebar -->
+      <div id="sidebar-wrapper">
+          <ul class="sidebar-nav">
+              <li class="sidebar-brand">
+                  <a href="/">
+                      GJG
+                  </a>
+              </li>
+
+              {% if current_user is not defined and admin is not defined %}
+                <li>
+                    <a href="/signup">Registrarse</a>
+                </li>
+                
+                <li>
+                    <a href="#" data-toggle="modal" data-target="#LoginModal">Iniciar Sesión</a>
+                </li>
+
+                <li>
+                    <a href="#" data-toggle="modal" data-target="#LoginAdminModal">Administrador</a>
+                </li>
+              {% else %}
+                <li>
+                    <a href="/cerrar_sesion">Cerrar Sesión</a>
+                </li>
+                <li>
+                    <a href="/consulta-tarifa">Consultar Tarifa</a>
+                </li>
+                {% if admin is not defined %}
+                <!-- aqui voy a la gestion de usuario normal -->
+                  <li>
+                      <a href="/gestion-solicitud-cliente">Gestión de Solicitudes</a>
+                  </li>
+                {% else %}
+                <!-- aqui voy a la gestion de administrador -->
+                  <li>
+                      <a href="/gestion-solicitud-admin">Gestión de Solicitudes</a>
+                  </li>
+
+                  <li>
+                      <a href="/reportes">Reportes</a>
+                  </li>
+                {% endif %}
+                
+              {% endif %}
+          </ul>
+      </div>
+      <!-- /#sidebar-wrapper -->
+
+
+    {% block content %}{% endblock %}
+
+    </div>
+   <!-- /#wrapper -->
+
+
+    <!-- modal LOGIN -->
+    <div class="modal fade" id="LoginModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">Iniciar Sesión</h4>
+          </div>
+          <div class="modal-body">
+            <div class=" row row-completo">
+              <div class="col-md-2 col-xs-2"></div>
+              <div class="col-md-8 col-xs-8">
+                <form id="form-login" action="/" method="post" data-toggle="validator">
+                  <div class="form-group">
+
+                    <label for="login_email">Correo Electrónico:</label>
+                    <input type="email" class="form-control" id="login_email" placeholder="Correo Electrónico" name="correo" required="">
+                  </div>
+                  <div class="form-group">
+                    <label for="login_pwd">Contraseña:</label>
+                    <input type="password" class="form-control" id="login_pwd" placeholder="Contraseña" name="password" required="">
+                  </div>
+                  <div class="text-aling-right">
+                    <button type="submit" class="btn btn-info">Entrar</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- modal LOGIN ADMIN-->
+    <div class="modal fade" id="LoginAdminModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalAdminLabel">Iniciar Sesión (Administrador)</h4>
+          </div>
+          <div class="modal-body">
+            <div class=" row row-completo">
+              <div class="col-md-2 col-xs-2"></div>
+              <div class="col-md-8 col-xs-8">
+                <form id="form-login-admin" action="/login_admin" method="post" data-toggle="validator">
+                  <div class="form-group">
+
+                    <label for="login_email_admin">Correo Electrónico:</label>
+                    <input type="email" class="form-control" id="login_email_admin" placeholder="Correo Electrónico" name="correo" required="">
+                  </div>
+                  <div class="form-group">
+                    <label for="login_pwd_admin">Contraseña:</label>
+                    <input type="password" class="form-control" id="login_pwd_admin" placeholder="Contraseña" name="password" required="">
+                  </div>
+                  <div class="text-aling-right">
+                    <button type="submit" class="btn btn-info">Entrar</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Menu Toggle Script -->
+    <script>
+    $("#menu-toggle").click(function(e) {
+        e.preventDefault();
+        $("#wrapper").toggleClass("toggled");
+    });
+    </script>
+
+
+  </body>
+</html>

@@ -4,9 +4,10 @@ import configuracion
 from flask import Flask, request, json, make_response, render_template, json, flash, redirect, url_for, session
 from flask_restful import Resource, Api, reqparse, abort
 from datetime import datetime, date, time, timedelta
+from random import choice
 import jwt, calendar, hashlib, time, re, pdfkit
 from flaskext.mysql import MySQL
-import requests
+import requests, random
 
 errors = {
     'UsuarioExistente': {
@@ -36,6 +37,10 @@ errors = {
     'ErrorAlDecodificar': {
         'error': "Error al decodificar el token",
         'status': 412,
+    },
+    'ErrorToken': {
+        'error': "Se requiere un token de autenticación",
+        'status': 400,
     }
 }
 
@@ -49,6 +54,11 @@ success = {
     	'message': "Login realizado exitosamente",
     	'status' : 200,
     }
+    ,
+    'SolicitudDistribucionExitosa':{
+    	'message': "Solicitud de distribución realizada exitosamente",
+    	'status' : 200,
+    }
 }
 
 app = configuracion.app_conf()
@@ -56,16 +66,11 @@ api = Api(app, errors=errors)
 mysql = MySQL()
 mysql.init_app(app)
 
-# app.config['MYSQL_DATABASE_USER'] = 'root'
-# app.config['MYSQL_DATABASE_PASSWORD'] = ''
-# app.config['MYSQL_DATABASE_DB'] = 'gjg'
-# app.config['MYSQL_DATABASE_HOST'] = 'localhost'
-# app.secret_key = "Estodeberiaserandom"
 
 url = 'http://localhost:5000'
 headers = {'content-type': 'application/json'}
 
-
+#===== Index y Login =====#
 @app.route('/', methods=['GET','POST'])
 def index():
 	# Si tengo token en el local storage estoy logeado, sino no
@@ -87,18 +92,34 @@ def index():
 
 		return render_template("index.html", error=response['error'])
 
+@app.route('/login_admin', methods=['POST'])
+def login_admin():
+
+	hashinput_password = hashlib.sha256(request.form['password'].encode('utf-8')).hexdigest() 
+
+	con = mysql.connect()
+	cursor = con.cursor()
+
+	cursor.execute("SELECT * FROM administrador WHERE correo=%s AND clave=%s", (request.form['correo'], hashinput_password))
+	admin = cursor.fetchone()
+
+	if (admin == None):
+		return render_template("index.html", error=errors['ErrorLogin']['error'])
+	else:
+		session['logged_in'] = 'admin'
+		return render_template("index.html", admin=request.form['correo'])
+	
+
+
+
+#===== Logout (Cerrar Sesión) =====#
 @app.route('/cerrar_sesion', methods=['GET'])
 def cerrar_sesion():
 	if(session.get('logged_in')): 
 		session.pop('logged_in', None)
 		return redirect(url_for('index'))
 
-
-#Funcion seleccionar que muestra la ventana luego del logueo
-@app.route('/seleccion')
-def seleccionar():
-	return selec_funct(session)
-
+#===== Signup (Registro) =====#
 @app.route('/signup', methods=['GET','POST'])
 def registro():
 	if(session.get('logged_in')):
@@ -126,28 +147,54 @@ def registro():
 				return render_template("registro.html", registrado=response['message'])
 			else:
 				return render_template("registro.html", error='Las contraseñas no coinciden')
-	
-		
 
 
-# @app.route('/inicio_sesion', methods=['POST'])
-# def inicio_sesion():
-# 	data = {"correo" : request.form['correo'], "clave" : request.form['password'] }
-# 	r = requests.post(url+'/login', json.dumps(data), headers=headers)
-# 	response = r.json()
-	
-# 	if response['status'] == 200:
+#===== Cliente o Adminstrador =====#
+@app.route('/consulta-tarifa')
+def consultar_tarifa():
+	if(session.get('logged_in')):
 
-# 		flash(response['access_token'])
-# 		return redirect(url_for('index'))
+		print(session.get('logged_in'))
 
-# 	return render_template("index.html", error=response['error'])
+		if session.get('logged_in') == 'admin':
+			return render_template("tarifa.html", admin=session.get('logged_in'))
+		else:
+			return render_template("tarifa.html", current_user=session.get('logged_in'))
+
+	return render_template("index.html")
+
+#===== Fin Cliente o Adminstrador =====#
+
+
+#===== Cliente Común =====#
+@app.route('/gestion-solicitud-cliente')
+def gestionar_solicitud_cliente():
+	return render_template("index.html")
+
+#===== Fin Cliente Común =====#
+
+#===== Adminstrador =====#
+@app.route('/gestion-solicitud-admin')
+def gestionar_solicitud_admin():
+	return render_template("index.html")
 
 
 
-# r = requests.get('http://127.0.0.1:5000/consultarTarifa/1060/8.5')
-# x = r.json()
-# print(x['monto_cotizado'])
+@app.route('/reportes')
+def generar_reporte():
+	return render_template("index.html")
+
+#===== Fin Adminstrador =====#
+
+
+
+
+
+#No se si uso esto...
+#Funcion seleccionar que muestra la ventana luego del logueo
+@app.route('/seleccion')
+def seleccionar():
+	return selec_funct(session)
 
 #Recibe argumento variado, en caso de ser POST recibe usuario y clave, sino solo retorna los valores del template
 def index_funct(*args):
@@ -170,7 +217,6 @@ def index_funct(*args):
 	return render_template("index.html", err=bad_user)
 
 
-
 #Funcion que retorna la pantalla principal despues de logeo (tambien elimina la sesion)
 def selec_funct(session):
 	if session.get('logged_in'):
@@ -185,7 +231,7 @@ codPostalOrigen = 1060;
 # El consultarTarifa no se manda token, pero se manda idCliente
 # solicitarDistribucion ajuro tiene q estar registrado y se envia el token de sesion
 # Tomar en cuenta que el paquete se envia desde el comercio..
-# No habra prioridad.
+
 
 
 
@@ -195,6 +241,7 @@ class Register(Resource):
 	# 1. Expresion regular de que el rif solo sea un numero de 8 u 9 digitos, en caso de ser 8 se coloca un 0 a la izquierda.
 	# 2. Expresion regular de que el codPostal sea un numero de 4 digitos.
 	# 3. Evaluar si hay tiempo de crear mensajes personalizados para cada error de peticion.
+	# 4. Validar que el RIF sea unico
 	def post(self):
 		data = request.get_json()
 		print('data = ',data)
@@ -279,36 +326,38 @@ class solicitarDistribucion(Resource):
 		data = request.get_json()
 
 		#Validar campos obligatorios
-		if ('correo' not in data) or ('cedula' not in data) or ('nombre' not in data) or ('telefono' not in data) or ('direccion' not in data) or ('codPostal' not in data) or ('peso' not in data):
+		if ('correo' not in data) or ('cedula' not in data) or ('nombre' not in data) or ('telefono' not in data) or ('direccion' not in data) or \
+		('codPostal' not in data) or ('peso' not in data):
 			return errors['ErrorPeticion'], 400
 
 		codPostal = int(data['codPostal'])
 		if (codPostal >= 1000 and codPostal < 9000):
 
-			#calcular fecha de llegada del producto
+			con = mysql.connect()
+			cursor = con.cursor()
+
+			#Obtengo el token de acceso, con el token busco al cliente y de ahi obtengo el idCliente para asociarlo al encargo
+			usuario = request.headers.get('access_token')
+			if(usuario == None): return errors['ErrorToken'], 400
+			else:
+				try:
+					decod = jwt.decode(usuario, 'secret')
+				except jwt.InvalidTokenError:
+					return errors['ErrorAlDecodificar'], 412
+				cursor.execute("SELECT idCliente, codPostal FROM cliente WHERE correo=%s", (decod['sub']))
+				cliente = cursor.fetchone()
+
+				idCliente = cliente[0]
+				codPostalCliente = int(cliente[1])
+
 			#Obtengo la fecha y hora actual
 			fechaActual = date.today()
 			print("fechaActual = ", fechaActual)
 
-			#dependiendo de lo lejos le coloco una cantidad de dias
-			fechaEstimada = fechaActual + timedelta(days=3)
-			print("fechaEstimada = ", fechaEstimada)
 
-			#En el caso de conservar el registro ´fechaEnvio´ colocar que se envia el siguiente dia si ya pasaron mas de las 10am
-			fechaEnvio = fechaActual + timedelta(days=1)
+			#El precio depende de la distancia entre codPostal y codPostalCliente, el peso, 
 
-			con = mysql.connect()
-			cursor = con.cursor()
-
-			cursor.execute("INSERT INTO direccion (codPostal, dirEnvio) VALUES(%s,%s)", (codPostal, data['direccion']) )
-			con.commit()
-
-			cursor.execute("SELECT idDireccion FROM direccion WHERE codPostal=%s AND dirEnvio=%s", (codPostal, data['direccion']))
-			idDireccion = cursor.fetchone()[0]
-			print("idDireccion = ", idDireccion)
-
-			#Por ahora voy a asumir que ya tengo el producto y no tengo que simular que me tiene que llegar por parte del comercio
-
+			#La fecha depende de la distancia entre codPostal y codPostalCliente
 
 			#Dependiendo del peso del encargo le asigno una categoria (esto se hace antes de calcular el costo OBVIAMENTE)
 			cursor.execute("SELECT * FROM categoriaPeso")
@@ -321,23 +370,87 @@ class solicitarDistribucion(Resource):
 					idCategoriaPeso = x[0]
 					break
 
+			costoBase = 1000.00
+
+			# Multiplico el costo base por el tamano que tenga el producto
+			costo = costoBase * int(idCategoriaPeso)
+
+
+			#Para el random hacer una funcion en donde se le mande el rango de dias q puede salir
+			diferencia_cod_postal = abs( codPostal - codPostalCliente )
+			
+			if diferencia_cod_postal>=0 and diferencia_cod_postal<=1000:
+				fechaEstimada = fechaActual + timedelta(days=1)
+			elif diferencia_cod_postal>1000 and diferencia_cod_postal<=3000:
+				costo += 1000
+				#si aun no son las 12pm entonces fechaEstimada es el siguiente dia
+				#tomar en cuenta que no se trabaja fines de semana???
+				N = random.randint(1, 2)
+				fechaEstimada = fechaActual + timedelta(days=N)
+			
+			elif diferencia_cod_postal>3000 and diferencia_cod_postal<=5000:
+				costo += 2000
+				#random que sea de 2 a 3 dias o de 3 a 4 dias si ya no son las 12pm
+				N = random.randint(2, 4)
+				fechaEstimada = fechaActual + timedelta(days=N)
+			elif diferencia_cod_postal>5000 and diferencia_cod_postal<=7000:
+				costo += 3000
+				#random que sea de 4 a 5 dias o de 5 a 6 dias si ya no son las 12pm
+				N = random.randint(4, 6)
+				fechaEstimada = fechaActual + timedelta(days=N)
+			elif diferencia_cod_postal > 7000:
+				#random que sea de 6 a 7 dias o de 7 a 8 si ya no son las 12pm
+				costo += 4000
+				N = random.randint(6, 8)
+				fechaEstimada = fechaActual + timedelta(days=N)
+
+			
+			#Generacion del tracking number
+			longitud = 8
+			# valores = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+			valores = "0123456789"
+
+			tracking = ""
+			while True:
+		  		tracking = tracking.join([choice(valores) for i in range(longitud)])
+		  		cursor.execute("SELECT * FROM encargo WHERE tracking=%s", tracking)
+		  		if (cursor.fetchone() == None):
+		  			break
+			
+			print("random = ", tracking)
+		
+			# fechaEstimada = fechaActual + timedelta(days=3)
+			print("fechaEstimada = ", fechaEstimada)
+
+			
+
+			cursor.execute("INSERT INTO direccion (codPostal, dirEnvio) VALUES(%s,%s)", (codPostal, data['direccion']) )
+			con.commit()
+
+			cursor.execute("SELECT idDireccion FROM direccion WHERE codPostal=%s AND dirEnvio=%s", (codPostal, data['direccion']))
+			idDireccion = cursor.fetchone()[0]
+			print("idDireccion = ", idDireccion)
+
+			#El producto me lo tiene que mandar el cliente, pero esa logica no la coloco... simplemente invento que lo tengo o no lo tengo y el administrador coloca en la pagina que ya llego
+
 			#Supongo que aqui siempre comenzara por 1, luego hay que simular los otros estatus 
 			idEstatus = 1
 
-			#En este momento que no se como obtendre el idCliente lo voy a cablear en 1.
-			idCliente = 1
-
-			#Por ahora no se si habra una prioridad de envio
-			idPrioridadEnvio = 1
-
-			# Aqui adentro va la logica para calcular el costo, basandose en la distancia y el peso total del encargo
-			costo = 5000.30
-
-			cursor.execute("INSERT INTO encargo (cedula, nombre, telefono, correo, peso, fechaEnvio, fechaEstimada, dirFuente, costo, idDireccion, idEstatus, idCliente, " +
-						   "idPrioridadEnvio, idCategoriaPeso) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)", ( data['cedula'], data['nombre'], data['telefono'], data['correo'], data['peso'], fechaEnvio, fechaEstimada, None, costo, idDireccion, idEstatus, idCliente, idPrioridadEnvio , idCategoriaPeso  ) )
+			cursor.execute("INSERT INTO encargo (cedula, nombre, telefono, correo, peso, fechaEstimada, costo, tracking, idDireccion, idEstatus, idCliente, " +
+						   "idCategoriaPeso) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)", ( data['cedula'], data['nombre'], data['telefono'], data['correo'], data['peso'], fechaEstimada, costo, tracking, idDireccion, idEstatus, idCliente, idCategoriaPeso  ) )
 			con.commit()
 
-		return "fin"
+				
+			#Esto deberia retornar el tracking
+			success['SolicitudDistribucionExitosa']['tracking_number'] = tracking
+			return success['SolicitudDistribucionExitosa'], 200
+
+		errors['ErrorPeticion']['message'] = "Código postal incorrecto"
+		return errors['ErrorPeticion'], 400
+
+
+	
+
 
 class actualizarEstadoSolicitud(Resource):
 	def put(self):
@@ -380,9 +493,7 @@ class solicitudesPorDespachar(Resource):
 		#Tengo que convertirlo a json, darle a todos las filas una clave (clave-valor)
 		return json.dumps(encargos)
 
-
-
-
+###
 class getPDF(Resource):
 	def get(self):
 
@@ -394,104 +505,7 @@ class getPDF(Resource):
 		response.headers['Content-Disposition'] = 'inline; filename=output.pdf'
 
 		return response
-
-
-class Productos(Resource):
-	def get(self, idP):
-
-		con = mysql.connect()
-		cursor = con.cursor()
-
-		cursor.execute("SELECT * FROM producto WHERE idProducto=%s", (idP))
-		producto = cursor.fetchone()
-
-		if(producto != None): return dict(id=producto[0], nombre=producto[1], descripcion=producto[2], foto=producto[3], precio=producto[4], cantVendida=producto[5], idCategoria=producto[6])
-
-		return errors['ProductoNotFound'], 404
-
-class ProductosList(Resource):
-	def get(self):
-		con = mysql.connect()
-		cursor = con.cursor()
-
-		cursor.execute("SELECT * FROM producto")
-		data = cursor.fetchall()
-
-		return ([dict(id=producto[0], nombre=producto[1], descripcion=producto[2], foto=producto[3], precio=producto[4], cantVendida=producto[5], idCategoria=producto[6]) for producto in data])
-
-	def post(self):
-		producto = request.get_json()
-
-		con = mysql.connect()
-		cursor = con.cursor()
-
-		if ('nombre' not in producto) or ('precio' not in producto):
-			return errors['ErrorPeticion'], 400
-
-		cursor.execute("SELECT COUNT(*) FROM producto")
-		data = cursor.fetchone()
-		producto['idProducto'] = int(data[0]) + 1;
-
-		if ('foto') not in producto:
-			producto['foto'] = None
-		if ('cantVendida') not in producto:
-			producto['cantVendida'] = 0
-		if ('idCategoria') not in producto:
-			producto['idCategoria'] = None
-		if ('descripcion') not in producto:
-			producto['descripcion'] = None
-
-
-		cursor.execute("INSERT INTO producto VALUES (%s,%s,%s,%s,%s,%s,%s)", (producto['idProducto'], producto['nombre'], producto['descripcion'], producto['foto'], producto['precio'], producto['cantVendida'], producto['idCategoria']))
-		con.commit()
-
-		return success['ProductoAgregado'], 200
-
-	def put(self):
-		producto = request.get_json()
-
-		con = mysql.connect()
-		cursor = con.cursor()
-
-		if ('idProducto' not in producto):
-			return errors['ErrorPeticion'], 400
-
-		cursor.execute("SELECT * from producto WHERE idProducto=%s", (producto['idProducto']))
-		hay_producto = cursor.fetchone()
-
-		if(hay_producto == None): return errors['ProductoNotFound'], 404
-
-		if('nombre' not in producto or producto['nombre'] == None): producto['nombre'] = hay_producto[1]
-		if('descripcion' not in producto or producto['descripcion'] == None): producto['descripcion'] = hay_producto[2]
-		if('foto' not in producto or producto['foto'] == None): producto['foto'] = hay_producto[3]
-		if('precio' not in producto or producto['precio'] == None): producto['precio'] = hay_producto[4]	
-		if('cantVendida' not in producto or producto['cantVendida'] == None): producto['cantVendida'] = hay_producto[5]	
-		if('idCategoria' not in producto or producto['idCategoria'] == None): producto['idCategoria'] = hay_producto[6]	
-
-
-		cursor.execute("UPDATE producto SET idProducto=%s, nombre=%s, descripcion=%s, foto=%s, precio=%s, cantVendida=%s, idCategoria=%s WHERE idProducto=%s", (producto['idProducto'], producto['nombre'], producto['descripcion'], producto['foto'], producto['precio'], producto['cantVendida'], producto['idCategoria'], producto['idProducto']))
-		con.commit()
-
-		return success['ProductoEditado'], 200
-
-class InfoUser(Resource):
-	def get(self):
-
-		usuario = request.headers.get('access_token')
-		con = mysql.connect()
-		cursor = con.cursor()
-
-		if(usuario != None): 
-			try:
-				decod = jwt.decode(usuario, 'secret')
-			except jwt.InvalidTokenError:
-				return errors['ErrorAlDecodificar'], 412
-			cursor.execute("SELECT * FROM cliente WHERE email=%s", (decod['sub']))
-			data = cursor.fetchone()
-			return dict(nombre=data[1], apellido=data[2], fotoPerfil=data[5], fechaNacimiento=data[6], genero=data[7], telefono=data[8], ciudad=data[9])
-		return errors['RecursoNoExistente'], 404
-
-
+###
 
 api.add_resource(Register, '/registro')
 api.add_resource(Login, '/login')
@@ -503,15 +517,8 @@ api.add_resource(solicitudesPorDespachar, '/solicitudes-por-despachar')
 
 # api.add_resource(getPDF, '/pdf')
 
-
-
 #DUDAS
 # 1) Solicitudes recibidas del comercio?
-
-
-api.add_resource(Productos, '/productos/<string:idP>', endpoint='prod_ep')
-api.add_resource(ProductosList, '/productos')
-api.add_resource(InfoUser, '/usuario')
 
 
 @app.route('/pdf')
