@@ -1,0 +1,168 @@
+{% extends "layout.html" %}
+
+{% block extra_head %} 
+<link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-datetimepicker.min.css') }}">
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="{{ url_for('static', filename='js/moment.js') }}"></script>
+<script src="{{ url_for('static', filename='js/bootstrap-datetimepicker.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/gestion_solicitud.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+
+<!-- Page Content -->
+<div id="page-content-wrapper">
+    <div class="container-fluid">
+
+        <div class="row">
+
+        	<!-- Menu SideBar -->
+            <div class="col-md-3">
+            	<a href="#menu-toggle" class="btn btn-default" id="menu-toggle">Menu</a>
+            </div>
+               
+            <!-- Indicar que esta es la fecha en que se realizo la compra -->
+            <!-- Calendarios -->
+		    <div class='col-sm-2'>
+		        <div class="form-group">
+		            <div class='input-group date' id='datetimepicker6'>
+		                <input id="fecha1" type='text' class="form-control" />
+		                <span class="input-group-addon">
+		                    <span class="glyphicon glyphicon-calendar"></span>
+		                </span>
+		            </div>
+		        </div>
+		    </div>
+		    <div class='col-sm-2'>
+		        <div class="form-group">
+		            <div class='input-group date' id='datetimepicker7'>
+		                <input id="fecha2" type='text' class="form-control" />
+		                <span class="input-group-addon">
+		                    <span class="glyphicon glyphicon-calendar"></span>
+		                </span>
+		            </div>
+		        </div>
+		    </div>
+
+	     	<div class='col-sm-2'>
+		    	<button class="btn btn-info" type="submit" id="botonBuscar">Buscar</button>
+        	</div>
+
+        	<div class="col-md-1 ">
+				<p class="text-right"><b>Estado</b></p>
+			</div>
+    		<div class="col-md-2">
+		  		<select class="form-control" id="sel_solicitudes" name="estado">
+		  			<option> </option>
+		  			<option> POR PROCESAR </option>
+		  			<option> PROCESADO </option>
+		  			<option> EN RUTA </option>
+		  			<option> ENTREGADO </option>
+		  		</select>
+
+    		</div>
+		  		
+
+        </div> <!-- end row -->
+
+
+        <div class="row">
+			{% if actualizado is defined %} 
+				<script>
+					$(document).ready(function(){
+						alert( 'Actualización Exitosa!' );
+					});
+
+				</script>
+
+			{% endif %}
+			<div class="col-md-12">
+				<table class="table table-bordered table-hover" id='tab_logic'>
+				    <thead>
+				      <tr>
+				        <th># Orden</th>
+				        <th>Enviado a</th>
+				        <th>Comercio</th>
+				        <th>Costo</th>
+				        <th>Fecha de Compra</th>
+				        <th>Fecha Estimada</th>
+				        <th>Estatus</th>
+				        <th>Dirección</th>
+				      </tr>
+				    </thead>
+				    <tbody>
+
+				    </tbody>
+				  </table>
+			</div>
+
+
+		</div> <!-- end row -->
+
+
+
+
+
+
+
+
+
+
+    </div>
+</div>
+<!-- /#page-content-wrapper -->
+
+<!-- modal Editar Solicitud-->
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModaleditl">Editar Solicitud</h4>
+      </div>
+      <div class="modal-body">
+        <div class=" row row-completo">
+          <div class="col-md-2 col-xs-2"></div>
+          <div class="col-md-8 col-xs-8">
+            <form id="form-edit" action="/editar-solicitud" method="post" data-toggle="validator">
+          		
+          		<div class="form-group">
+          			<input type="text" class="form-control" id="tracking" name="tracking">
+            	</div>
+
+          		<div class="form-group">
+				  <label for="sel">Estado</label>
+				  <select class="form-control" id="sel" name="estado">
+
+				  </select>
+				</div>
+
+              <div class="text-aling-center">
+                <button type="submit" class="btn btn-info">Aceptar</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script type="text/javascript">
+    $(function () {
+        $('#datetimepicker6').datetimepicker();
+        $('#datetimepicker7').datetimepicker({
+            useCurrent: false //Important! See issue #1075
+        });
+        $("#datetimepicker6").on("dp.change", function (e) {
+            $('#datetimepicker7').data("DateTimePicker").minDate(e.date);
+        });
+        $("#datetimepicker7").on("dp.change", function (e) {
+            $('#datetimepicker6').data("DateTimePicker").maxDate(e.date);
+        });
+    });
+</script>
+
+{% endblock %}

@@ -163,6 +163,9 @@ def consultar_tarifa():
 
 	return render_template("index.html")
 
+
+
+
 #===== Fin Cliente o Adminstrador =====#
 
 
@@ -176,7 +179,54 @@ def gestionar_solicitud_cliente():
 #===== Adminstrador =====#
 @app.route('/gestion-solicitud-admin')
 def gestionar_solicitud_admin():
+	if(session.get('logged_in')):
+		return render_template("gestion_solicitud.html", admin=session.get('logged_in'))
 	return render_template("index.html")
+
+@app.route('/solicitudes-admin')
+def get_solicitudes_admin():
+	if(session.get('logged_in')):
+
+		desde = str(request.args['desde'])
+		hasta = str(request.args['hasta'])
+		estatus = str(request.args['tipo'])
+
+		print( estatus )
+
+		# fecha = new Date( request.args['desde'] )
+		# print ('fecha = ', fecha)
+
+		con = mysql.connect()
+		cursor = con.cursor()
+
+		cursor.execute("SELECT * FROM view_solicitudes WHERE estatus=%s AND fechaCompra BETWEEN %s AND %s ", (estatus, desde, hasta) )
+		solicitudes = cursor.fetchall()
+		data = json.dumps(solicitudes)
+
+		return '{}'.format(data)
+	return render_template("index.html")
+
+
+@app.route('/editar-solicitud', methods=['POST'])
+def editar_solicitud():
+	if(session.get('logged_in')):
+
+		idEstado = request.form['estado']
+		tracking = int(request.form['tracking'])
+
+		print (idEstado)
+		print( tracking )
+
+
+		con = mysql.connect()
+		cursor = con.cursor()
+
+		cursor.execute("UPDATE encargo SET idEstatus = %s WHERE tracking = %s ", (idEstado, tracking) )
+		con.commit()
+
+		return render_template("gestion_solicitud.html", actualizado='Actualización de solicitud exitosa')
+	return render_template("index.html")
+
 
 
 
@@ -436,13 +486,15 @@ class solicitarDistribucion(Resource):
 			#Supongo que aqui siempre comenzara por 1, luego hay que simular los otros estatus 
 			idEstatus = 1
 
-			cursor.execute("INSERT INTO encargo (cedula, nombre, telefono, correo, peso, fechaEstimada, costo, tracking, idDireccion, idEstatus, idCliente, " +
-						   "idCategoriaPeso) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)", ( data['cedula'], data['nombre'], data['telefono'], data['correo'], data['peso'], fechaEstimada, costo, tracking, idDireccion, idEstatus, idCliente, idCategoriaPeso  ) )
+			cursor.execute("INSERT INTO encargo (cedula, nombre, telefono, correo, peso, fechaCompra, fechaEstimada, costo, tracking, idDireccion, idEstatus, idCliente, " +
+						   "idCategoriaPeso) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)", ( data['cedula'], data['nombre'], data['telefono'], data['correo'], data['peso'], fechaActual, fechaEstimada, costo, tracking, idDireccion, idEstatus, idCliente, idCategoriaPeso  ) )
 			con.commit()
 
 				
 			#Esto deberia retornar el tracking
+			success['SolicitudDistribucionExitosa']['costo'] = costo
 			success['SolicitudDistribucionExitosa']['tracking_number'] = tracking
+			success['SolicitudDistribucionExitosa']['fechaEstimada'] = str(fechaEstimada)
 			return success['SolicitudDistribucionExitosa'], 200
 
 		errors['ErrorPeticion']['message'] = "Código postal incorrecto"

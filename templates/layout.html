@@ -5,15 +5,19 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, shrink-to-fit=no, initial-scale=1">
       <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+      
       <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
       <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
       <link rel="stylesheet" href="{{ url_for('static', filename='css/simple-sidebar.css') }}">
+
       <script src="{{ url_for('static', filename='js/jquery.js') }}"></script>
       <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+      
       {% block extra_head %} 
 
       {% endblock %}
-
+      
+      
       <title>{% block title %} GJG C.A {% endblock %}</title>
     
     {% endblock %}
@@ -45,9 +49,6 @@
               {% else %}
                 <li>
                     <a href="/cerrar_sesion">Cerrar Sesión</a>
-                </li>
-                <li>
-                    <a href="/consulta-tarifa">Consultar Tarifa</a>
                 </li>
                 {% if admin is not defined %}
                 <!-- aqui voy a la gestion de usuario normal -->
