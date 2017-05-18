@@ -86,14 +86,14 @@ CREATE TABLE IF NOT EXISTS `direccion` (
   `codPostal` int(4) NOT NULL,
   `dirEnvio` varchar(255) NOT NULL,
   PRIMARY KEY (`idDireccion`)
-) ENGINE=InnoDB AUTO_INCREMENT=64 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=76 DEFAULT CHARSET=latin1;
 
--- Volcando datos para la tabla gjg.direccion: ~57 rows (aproximadamente)
+-- Volcando datos para la tabla gjg.direccion: ~68 rows (aproximadamente)
 /*!40000 ALTER TABLE `direccion` DISABLE KEYS */;
 INSERT INTO `direccion` (`idDireccion`, `codPostal`, `dirEnvio`) VALUES
 	(7, 1060, 'Los Palos Grandes, primera avenida, edf marialaya piso 6 apto. 27'),
-	(8, 1060, 'Los Palos Grandes, primera avenida, edf marialaya piso 6 apto. 27'),
-	(9, 1060, 'Los Palos Grandes, primera avenida, edf marialaya piso 6 apto. 27'),
+	(8, 1060, 'Altamira Sur, Edf. cartagena'),
+	(9, 1060, 'La castellana, tercera transversal, edf. juarez'),
 	(10, 1060, 'Los Palos Grandes, primera avenida, edf marialaya piso 6 apto. 27'),
 	(11, 1060, 'Los Palos Grandes, primera avenida, edf marialaya piso 6 apto. 27'),
 	(12, 1060, 'Los Palos Grandes, primera avenida, edf marialaya piso 6 apto. 27'),
@@ -147,7 +147,19 @@ INSERT INTO `direccion` (`idDireccion`, `codPostal`, `dirEnvio`) VALUES
 	(60, 5060, 'Estado Bolivar avenida paez edf miranda pso 4 apt 16'),
 	(61, 5060, 'Estado Bolivar avenida paez edf miranda pso 4 apt 16'),
 	(62, 5060, 'Estado Bolivar avenida paez edf miranda pso 4 apt 16'),
-	(63, 5060, 'Estado Bolivar avenida paez edf miranda pso 4 apt 16');
+	(63, 5060, 'Estado Bolivar avenida paez edf miranda pso 4 apt 16'),
+	(64, 1030, 'Av lecuna edf el marquito piso 2 apt 22'),
+	(65, 1030, 'Av lecuna edf lecuna piso 8 apt 8-B'),
+	(66, 1020, 'Chuao, esquina la margarita'),
+	(67, 5014, 'Sotillo, Higuerote'),
+	(68, 8014, 'Lecheria, Barcelona'),
+	(69, 7041, 'Merida, edf. el gocho'),
+	(70, 1050, 'Las mercedes, caracas'),
+	(71, 1060, 'Chacao, Caracas'),
+	(72, 1020, 'Parque Central, Caracas'),
+	(73, 1020, 'Parque Central, Caracas'),
+	(74, 1020, 'Parque Central, Caracas'),
+	(75, 1090, 'Los Naranjos, Caracas');
 /*!40000 ALTER TABLE `direccion` ENABLE KEYS */;
 
 -- Volcando estructura para tabla gjg.encargo
@@ -175,31 +187,41 @@ CREATE TABLE IF NOT EXISTS `encargo` (
   CONSTRAINT `fk_encargo_cliente` FOREIGN KEY (`idCliente`) REFERENCES `cliente` (`idCliente`),
   CONSTRAINT `fk_encargo_direccion` FOREIGN KEY (`idDireccion`) REFERENCES `direccion` (`idDireccion`),
   CONSTRAINT `fk_encargo_estatus` FOREIGN KEY (`idEstatus`) REFERENCES `estatusencargo` (`idEstatus`)
-) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=latin1;
 
--- Volcando datos para la tabla gjg.encargo: ~20 rows (aproximadamente)
+-- Volcando datos para la tabla gjg.encargo: ~29 rows (aproximadamente)
 /*!40000 ALTER TABLE `encargo` DISABLE KEYS */;
 INSERT INTO `encargo` (`idEncargo`, `cedula`, `nombre`, `telefono`, `correo`, `peso`, `fechaCompra`, `fechaEstimada`, `costo`, `tracking`, `idDireccion`, `idEstatus`, `idCliente`, `idCategoriaPeso`) VALUES
-	(11, '24635907', 'Jose Gregorio Castro', '04140179052', 'josegregorio994@gmail.com', 3.5, '0000-00-00', '2017-04-02', 2000, '06647903', 7, 1, 17, 2),
-	(12, '24635907', 'Jose Gregorio Castro', '04140179052', 'josegregorio994@gmail.com', 3.5, '0000-00-00', '2017-04-02', 2000, '64576962', 7, 1, 17, 2),
-	(13, '24635907', 'Jose Gregorio Castro', '04140179052', 'josegregorio994@gmail.com', 3.5, '0000-00-00', '2017-04-02', 2000, '45692556', 7, 1, 17, 2),
-	(14, '24635907', 'Jose Gregorio Castro', '04140179052', 'josegregorio994@gmail.com', 3.5, '0000-00-00', '2017-04-02', 2000, '28960237', 7, 1, 17, 2),
-	(15, '24635907', 'Jose Gregorio Castro', '04140179052', 'josegregorio994@gmail.com', 3.5, '0000-00-00', '2017-04-02', 2000, '79096925', 7, 1, 17, 2),
-	(16, '24635907', 'Jose Gregorio Castro', '04140179052', 'josegregorio994@gmail.com', 3.5, '0000-00-00', '2017-04-02', 2000, '87397276', 7, 1, 17, 2),
-	(17, '24635907', 'Jose Gregorio Castro', '04140179052', 'josegregorio994@gmail.com', 3.5, '0000-00-00', '2017-04-02', 2000, '70995017', 7, 1, 17, 2),
-	(18, '24635907', 'Jose Gregorio Castro', '04140179052', 'josegregorio994@gmail.com', 3.5, '0000-00-00', '2017-04-02', 2000, '97712095', 7, 1, 17, 2),
-	(19, '24635907', 'Jose Gregorio Castro', '04140179052', 'josegregorio994@gmail.com', 3.5, '0000-00-00', '2017-04-03', 3000, '65733446', 52, 1, 17, 2),
-	(20, '12545874', 'Petra Contreras', '04140179052', 'petra@gmail.com', 7.3, '0000-00-00', '2017-04-04', 5000, '51124452', 53, 1, 17, 3),
-	(21, '12545874', 'Petra Contreras', '04140179052', 'petra@gmail.com', 7.3, '0000-00-00', '2017-04-04', 5000, '40164456', 53, 1, 17, 3),
-	(22, '12545874', 'Petra Contreras', '04140179052', 'petra@gmail.com', 7.3, '0000-00-00', '2017-04-04', 5000, '48219256', 53, 1, 17, 3),
-	(23, '12545874', 'Petra Contreras', '04140179052', 'petra@gmail.com', 7.3, '0000-00-00', '2017-04-05', 5000, '91157255', 53, 1, 17, 3),
-	(24, '12545874', 'Petra Contreras', '04140179052', 'petra@gmail.com', 7.3, '0000-00-00', '2017-04-06', 5000, '55608873', 53, 1, 17, 3),
-	(25, '12545874', 'Petra Contreras', '04140179052', 'petra@gmail.com', 7.3, '0000-00-00', '2017-04-04', 5000, '99910715', 53, 1, 17, 3),
-	(26, '12545874', 'Petra Contreras', '04140179052', 'petra@gmail.com', 7.3, '0000-00-00', '2017-04-06', 5000, '70625676', 53, 1, 17, 3),
-	(27, '12545874', 'Petra Contreras', '04140179052', 'petra@gmail.com', 7.3, '0000-00-00', '2017-04-04', 5000, '70458539', 53, 1, 17, 3),
-	(28, '12545874', 'Petra Contreras', '04140179052', 'petra@gmail.com', 7.3, '0000-00-00', '2017-04-05', 5000, '96597987', 53, 1, 17, 3),
-	(29, '12545874', 'Petra Contreras', '04140179052', 'petra@gmail.com', 7.3, '0000-00-00', '2017-04-05', 5000, '86747168', 53, 1, 17, 3),
-	(30, '12545874', 'Petra Contreras', '04140179052', 'petra@gmail.com', 7.3, '2017-04-02', '2017-04-05', 5000, '88441907', 53, 3, 17, 3);
+	(11, '24635907', 'Jose Gregorio Castro', '04140179052', 'josegregorio994@gmail.com', 3.5, '2017-04-03', '2017-04-02', 3000, '06647903', 7, 1, 17, 2),
+	(12, '24635907', 'Jose Gregorio Castro', '04140179052', 'juan@gmail.com', 2.2, '2017-04-04', '2017-04-02', 2000, '64576962', 8, 2, 17, 2),
+	(13, '24635907', 'Jose Gregorio Castro', '04140179052', 'darkside@gmail.com', 7.5, '2017-04-02', '2017-04-02', 6000, '45692556', 9, 2, 17, 2),
+	(14, '24635907', 'Jose Gregorio Castro', '04140179052', 'theteacher@gmail.com', 1.4, '2017-04-05', '2017-04-02', 1000, '28960237', 7, 3, 17, 2),
+	(15, '24635907', 'Jose Gregorio Castro', '04140179052', 'alejandro@gmail.com', 5.6, '2017-04-07', '2017-04-02', 4000, '79096925', 8, 3, 17, 2),
+	(16, '24635907', 'Jose Gregorio Castro', '04140179052', 'jesus@gmail.com', 3.3, '2017-04-09', '2017-04-02', 2000, '87397276', 8, 2, 17, 2),
+	(17, '24635907', 'Jose Gregorio Castro', '04140179052', 'daniel@gmail.com', 1.4, '2017-04-12', '2017-04-02', 2000, '70995017', 7, 3, 17, 2),
+	(18, '24635907', 'Jose Gregorio Castro', '04140179052', 'alexandra@gmail.com', 3.5, '2017-04-14', '2017-04-02', 2000, '97712095', 9, 2, 17, 2),
+	(19, '24635907', 'Jose Gregorio Castro', '04140179052', 'karen@gmail.com', 3.5, '2017-04-14', '2017-04-03', 3000, '65733446', 52, 1, 17, 2),
+	(20, '12545874', 'Petra Contreras', '04140179052', 'petra@gmail.com', 7.3, '2017-04-14', '2017-04-04', 5000, '51124452', 53, 1, 17, 3),
+	(21, '12545874', 'Petra Contreras', '04140179052', 'petra@gmail.com', 7.3, '2017-04-14', '2017-04-04', 5000, '40164456', 53, 1, 17, 3),
+	(22, '12545874', 'Petra Contreras', '04140179052', 'petra@gmail.com', 7.3, '2017-04-14', '2017-04-04', 5000, '48219256', 53, 1, 17, 3),
+	(23, '12545874', 'Petra Contreras', '04140179052', 'petra@gmail.com', 7.3, '2017-04-14', '2017-04-05', 5000, '91157255', 53, 1, 17, 3),
+	(24, '12545874', 'Petra Contreras', '04140179052', 'petra@gmail.com', 7.3, '2017-04-14', '2017-04-06', 5000, '55608873', 53, 1, 17, 3),
+	(25, '12545874', 'Petra Contreras', '04140179052', 'petra@gmail.com', 7.3, '2017-04-14', '2017-04-04', 5000, '99910715', 53, 1, 17, 3),
+	(26, '12545874', 'Petra Contreras', '04140179052', 'petra@gmail.com', 7.3, '2017-04-14', '2017-04-06', 5000, '70625676', 53, 1, 17, 3),
+	(27, '12545874', 'Petra Contreras', '04140179052', 'petra@gmail.com', 7.3, '2017-04-14', '2017-04-04', 5000, '70458539', 53, 1, 17, 3),
+	(28, '12545874', 'Petra Contreras', '04140179052', 'petra@gmail.com', 7.3, '2017-04-14', '2017-04-05', 5000, '96597987', 53, 1, 17, 3),
+	(29, '12545874', 'Petra Contreras', '04140179052', 'petra@gmail.com', 7.3, '2017-04-20', '2017-04-05', 5000, '86747168', 53, 1, 17, 3),
+	(30, '12545874', 'Petra Contreras', '04140179052', 'petra@gmail.com', 7.3, '2017-04-02', '2017-04-05', 5000, '88441907', 53, 2, 17, 3),
+	(31, '25584564', 'Jose Alvarez', '04145687485', 'jesema@gmail.com', 2.4, '2017-05-08', '2017-05-09', 1000, '47772774', 64, 1, 17, 1),
+	(32, '25584564', 'Jose Alvarez', '04145687485', 'jesema@gmail.com', 2.4, '2017-05-18', '2017-05-19', 1000, '25977748', 64, 3, 17, 1),
+	(33, '12545874', 'Carlos Gonzalez', '0416854854', 'carlitos@gmail.com', 5, '2017-05-18', '2017-05-19', 2000, '80359229', 66, 1, 1, 2),
+	(34, '14587454', 'Barbara Madrid', '0412568458', 'barbie@gmail.com', 1.2, '2017-05-18', '2017-05-21', 3000, '97051976', 67, 1, 1, 1),
+	(35, '6454875', 'Karla Contreras', '0414587458', 'karla@gmail.com', 5.6, '2017-05-18', '2017-05-23', 5000, '70980108', 68, 1, 3, 2),
+	(36, '6454875', 'Pedro Perez', '0412569856', 'pedrito@gmail.com', 7.4, '2017-05-18', '2017-05-22', 6000, '98638620', 69, 1, 3, 3),
+	(37, '9874562', 'Aparicio Pena', '0414256985', 'aparicio@gmail.com', 2.5, '2017-05-18', '2017-05-19', 1000, '43232065', 70, 1, 3, 1),
+	(38, '14568965', 'Miguel Silva', '0412545856', 'miguel@gmail.com', 9, '2017-05-18', '2017-05-19', 3000, '68266315', 71, 1, 3, 3),
+	(41, '10808934', 'Jensy Lazo', '04166046105', 'jensy@gmail.com', 2, '2017-05-18', '2017-05-19', 1000, '06915886', 72, 1, 3, 1),
+	(42, '6784585', 'Bernardo Fuentes', '04147856525', 'berni@gmail.com', 6.1, '2017-05-18', '2017-05-19', 2000, '54973197', 75, 1, 3, 2);
 /*!40000 ALTER TABLE `encargo` ENABLE KEYS */;
 
 -- Volcando estructura para tabla gjg.estadofactura
@@ -207,13 +229,14 @@ CREATE TABLE IF NOT EXISTS `estadofactura` (
   `idEstadoFactura` int(11) NOT NULL AUTO_INCREMENT,
   `descripcion` varchar(50) NOT NULL,
   PRIMARY KEY (`idEstadoFactura`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 
--- Volcando datos para la tabla gjg.estadofactura: ~2 rows (aproximadamente)
+-- Volcando datos para la tabla gjg.estadofactura: ~3 rows (aproximadamente)
 /*!40000 ALTER TABLE `estadofactura` DISABLE KEYS */;
 INSERT INTO `estadofactura` (`idEstadoFactura`, `descripcion`) VALUES
 	(1, 'VIGENTE'),
-	(2, 'VENCIDA');
+	(2, 'VENCIDA'),
+	(3, 'CANCELADA');
 /*!40000 ALTER TABLE `estadofactura` ENABLE KEYS */;
 
 -- Volcando estructura para tabla gjg.estatusencargo
@@ -235,27 +258,82 @@ INSERT INTO `estatusencargo` (`idEstatus`, `descripcion`) VALUES
 -- Volcando estructura para tabla gjg.factura
 CREATE TABLE IF NOT EXISTS `factura` (
   `idFactura` int(11) NOT NULL AUTO_INCREMENT,
-  `fechaCancelacion` date NOT NULL,
+  `fechaCancelacion` date DEFAULT NULL,
   `fechaVencimiento` date NOT NULL,
   `monto` double NOT NULL,
   `idCliente` int(11) NOT NULL,
   `idEstadoFactura` int(11) NOT NULL,
+  `idEncargo` int(11) NOT NULL,
   PRIMARY KEY (`idFactura`),
   KEY `fk_factura_cliente` (`idCliente`),
   KEY `fk_factura_estadoFactura` (`idEstadoFactura`),
+  KEY `fk_factura_encargo` (`idEncargo`),
   CONSTRAINT `fk_factura_cliente` FOREIGN KEY (`idCliente`) REFERENCES `cliente` (`idCliente`),
+  CONSTRAINT `fk_factura_encargo` FOREIGN KEY (`idEncargo`) REFERENCES `encargo` (`idEncargo`),
   CONSTRAINT `fk_factura_estadoFactura` FOREIGN KEY (`idEstadoFactura`) REFERENCES `estadofactura` (`idEstadoFactura`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
 
--- Volcando datos para la tabla gjg.factura: ~0 rows (aproximadamente)
+-- Volcando datos para la tabla gjg.factura: ~4 rows (aproximadamente)
 /*!40000 ALTER TABLE `factura` DISABLE KEYS */;
+INSERT INTO `factura` (`idFactura`, `fechaCancelacion`, `fechaVencimiento`, `monto`, `idCliente`, `idEstadoFactura`, `idEncargo`) VALUES
+	(1, '2017-05-16', '2017-05-29', 6000, 3, 3, 36),
+	(2, '2017-05-16', '2017-05-31', 1000, 3, 3, 37),
+	(3, '2017-05-17', '2017-06-02', 3000, 3, 3, 38),
+	(4, NULL, '2017-06-02', 1000, 3, 1, 41),
+	(5, NULL, '2017-05-17', 2000, 3, 2, 42);
 /*!40000 ALTER TABLE `factura` ENABLE KEYS */;
+
+-- Volcando estructura para vista gjg.view_clientes
+-- Creando tabla temporal para superar errores de dependencia de VIEW
+CREATE TABLE `view_clientes` (
+	`descripcion` VARCHAR(50) NOT NULL COLLATE 'latin1_swedish_ci',
+	`correo` VARCHAR(50) NOT NULL COLLATE 'latin1_swedish_ci',
+	`rif` VARCHAR(9) NOT NULL COLLATE 'latin1_swedish_ci',
+	`codPostal` INT(4) NOT NULL,
+	`cantidad` BIGINT(21) NOT NULL
+) ENGINE=MyISAM;
+
+-- Volcando estructura para vista gjg.view_destinos
+-- Creando tabla temporal para superar errores de dependencia de VIEW
+CREATE TABLE `view_destinos` (
+	`codPostal` INT(4) NOT NULL,
+	`dirEnvio` VARCHAR(255) NOT NULL COLLATE 'latin1_swedish_ci',
+	`cantidad` BIGINT(21) NOT NULL
+) ENGINE=MyISAM;
 
 -- Volcando estructura para vista gjg.view_estatus_cargo
 -- Creando tabla temporal para superar errores de dependencia de VIEW
 CREATE TABLE `view_estatus_cargo` (
 	`idEstatus` INT(11) NOT NULL,
 	`descripcion` VARCHAR(30) NOT NULL COLLATE 'latin1_swedish_ci'
+) ENGINE=MyISAM;
+
+-- Volcando estructura para vista gjg.view_facturas_cancelacion
+-- Creando tabla temporal para superar errores de dependencia de VIEW
+CREATE TABLE `view_facturas_cancelacion` (
+	`fechaCancelacion` DATE NULL,
+	`fechaVencimiento` DATE NOT NULL,
+	`monto` DOUBLE NOT NULL,
+	`comercio` VARCHAR(50) NOT NULL COLLATE 'latin1_swedish_ci',
+	`estado` VARCHAR(50) NOT NULL COLLATE 'latin1_swedish_ci'
+) ENGINE=MyISAM;
+
+-- Volcando estructura para vista gjg.view_facturas_vencidas
+-- Creando tabla temporal para superar errores de dependencia de VIEW
+CREATE TABLE `view_facturas_vencidas` (
+	`fechaVencimiento` DATE NOT NULL,
+	`monto` DOUBLE NOT NULL,
+	`comercio` VARCHAR(50) NOT NULL COLLATE 'latin1_swedish_ci',
+	`estado` VARCHAR(50) NOT NULL COLLATE 'latin1_swedish_ci'
+) ENGINE=MyISAM;
+
+-- Volcando estructura para vista gjg.view_facturas_vigentes
+-- Creando tabla temporal para superar errores de dependencia de VIEW
+CREATE TABLE `view_facturas_vigentes` (
+	`fechaVencimiento` DATE NOT NULL,
+	`monto` DOUBLE NOT NULL,
+	`comercio` VARCHAR(50) NOT NULL COLLATE 'latin1_swedish_ci',
+	`estado` VARCHAR(50) NOT NULL COLLATE 'latin1_swedish_ci'
 ) ENGINE=MyISAM;
 
 -- Volcando estructura para vista gjg.view_solicitudes
@@ -282,10 +360,52 @@ CREATE TABLE `view_solicitudes_despachadas`
 CREATE TABLE `view_solicitudes_por_despachar` 
 ) ENGINE=MyISAM;
 
+-- Volcando estructura para vista gjg.view_clientes
+-- Eliminando tabla temporal y crear estructura final de VIEW
+DROP TABLE IF EXISTS `view_clientes`;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` VIEW `view_clientes` AS SELECT c.descripcion, c.correo, c.rif, c.codPostal, COUNT(e.idCliente) cantidad
+FROM encargo e, cliente c
+WHERE e.idCliente = c.idCliente
+GROUP BY e.idCliente
+ORDER BY COUNT(e.idCliente) DESC ;
+
+-- Volcando estructura para vista gjg.view_destinos
+-- Eliminando tabla temporal y crear estructura final de VIEW
+DROP TABLE IF EXISTS `view_destinos`;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` VIEW `view_destinos` AS SELECT d.codPostal, d.dirEnvio, COUNT(e.idDireccion) cantidad
+FROM encargo e, direccion d
+WHERE e.idDireccion = d.idDireccion
+GROUP BY e.idDireccion
+ORDER BY COUNT(e.idDireccion) DESC ;
+
 -- Volcando estructura para vista gjg.view_estatus_cargo
 -- Eliminando tabla temporal y crear estructura final de VIEW
 DROP TABLE IF EXISTS `view_estatus_cargo`;
 CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` VIEW `view_estatus_cargo` AS SELECT * FROM estatusencargo ;
+
+-- Volcando estructura para vista gjg.view_facturas_cancelacion
+-- Eliminando tabla temporal y crear estructura final de VIEW
+DROP TABLE IF EXISTS `view_facturas_cancelacion`;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` VIEW `view_facturas_cancelacion` AS SELECT f.fechaCancelacion, f.fechaVencimiento, f.monto, c.descripcion comercio, e.descripcion estado
+FROM factura f, cliente c, estadofactura e
+WHERE f.idCliente = c.idCliente AND f.idEstadoFactura = e.idEstadoFactura AND f.idEstadoFactura = 3
+ORDER BY f.fechaCancelacion ;
+
+-- Volcando estructura para vista gjg.view_facturas_vencidas
+-- Eliminando tabla temporal y crear estructura final de VIEW
+DROP TABLE IF EXISTS `view_facturas_vencidas`;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` VIEW `view_facturas_vencidas` AS SELECT f.fechaVencimiento, f.monto, c.descripcion comercio, e.descripcion estado
+FROM factura f, cliente c, estadofactura e
+WHERE f.idCliente = c.idCliente AND f.idEstadoFactura = e.idEstadoFactura AND f.idEstadoFactura = 2
+ORDER BY f.fechaCancelacion ;
+
+-- Volcando estructura para vista gjg.view_facturas_vigentes
+-- Eliminando tabla temporal y crear estructura final de VIEW
+DROP TABLE IF EXISTS `view_facturas_vigentes`;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` VIEW `view_facturas_vigentes` AS SELECT f.fechaVencimiento, f.monto, c.descripcion comercio, e.descripcion estado
+FROM factura f, cliente c, estadofactura e
+WHERE f.idCliente = c.idCliente AND f.idEstadoFactura = e.idEstadoFactura AND f.idEstadoFactura = 1
+ORDER BY f.fechaCancelacion ;
 
 -- Volcando estructura para vista gjg.view_solicitudes
 -- Eliminando tabla temporal y crear estructura final de VIEW
