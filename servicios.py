@@ -265,38 +265,254 @@ def pdf_generate():
 	desde = request.form['desde']
 	hasta = request.form['hasta']
 
+	con = mysql.connect()
+	cursor = con.cursor()
 
 	if solicitud == "Solicitudes Despachadas":
 
-		con = mysql.connect()
-		cursor = con.cursor()
 		cursor.execute("SELECT * FROM view_solicitudes WHERE estatus!=%s AND fechaCompra BETWEEN %s AND %s ", ("POR PROCESAR", desde, hasta) )
-		
 		solicitudes = cursor.fetchall()
-		print(solicitudes)
-		data = json.dumps(solicitudes)
-		print(data)
 
-		rendered = render_template('pdf_template.html', name="culo", location="adios")
-		pdf = pdfkit.from_string(rendered, False)
+		body = """
+				<!DOCTYPE html>
+				<html>
+				<head>
+					<title>Solicitudes Despachadas</title>
+					<meta name="pdfkit-page-size" content="Legal"/>
+					<meta name="pdfkit-orientation" content="Landscape"/>
+					<meta charset="utf-8">
+				</head>
+				<body>
+		    	<table width="100%">
+				  <tr>
+				    <th># Orden</th>
+				    <th>Enviado a</th>
+				    <th>Comercio</th>
+				    <th>Costo</th>
+				    <th>Fecha de Compra</th>
+				    <th>Fecha Estimada</th>
+				    <th>Estado</th>
+				    <th>Dirección</th>
+				  </tr>
+		"""
+		for solicitud in solicitudes:
+			body += """ <tr style="text-align:center;"> <td>""" + solicitud[0] + """ </td> """
+			body += """<td>""" + solicitud[1] + """ </td> """
+			body += """<td>""" + solicitud[2] + """ </td> """
+			body += """<td>""" + str(solicitud[3]) + """ </td> """
+			body += """<td>""" + str(solicitud[4]) + """ </td> """
+			body += """<td>""" + str(solicitud[5]) + """ </td> """
+			body += """<td>""" + str(solicitud[6]) + """ </td> """
+			body += """<td>""" + solicitud[7] + """ </td> """
+
+
+		body += """</tr> </table> </body> </html>"""
+
+		pdf = pdfkit.from_string(body, False)
 
 	elif solicitud == "Solicitudes Pendientes":
-		rendered = render_template('pdf_template.html', name="culo", location="adios")
-		pdf = pdfkit.from_string(rendered, False)
+
+		cursor.execute("SELECT * FROM view_solicitudes WHERE estatus=%s AND fechaCompra BETWEEN %s AND %s ", ("POR PROCESAR", desde, hasta) )
+		solicitudes = cursor.fetchall()
+
+		body = """
+				<!DOCTYPE html>
+				<html>
+				<head>
+					<title>Solicitudes Pendientes</title>
+					<meta name="pdfkit-page-size" content="Legal"/>
+					<meta name="pdfkit-orientation" content="Landscape"/>
+					<meta charset="utf-8">
+				</head>
+				<body>
+		    	<table width="100%">
+				  <tr>
+				    <th># Orden</th>
+				    <th>Enviado a</th>
+				    <th>Comercio</th>
+				    <th>Costo</th>
+				    <th>Fecha de Compra</th>
+				    <th>Fecha Estimada</th>
+				    <th>Estado</th>
+				    <th>Dirección</th>
+				  </tr>
+		"""
+		for solicitud in solicitudes:
+			body += """ <tr style="text-align:center;"> <td>""" + solicitud[0] + """ </td> """
+			body += """<td>""" + solicitud[1] + """ </td> """
+			body += """<td>""" + solicitud[2] + """ </td> """
+			body += """<td>""" + str(solicitud[3]) + """ </td> """
+			body += """<td>""" + str(solicitud[4]) + """ </td> """
+			body += """<td>""" + str(solicitud[5]) + """ </td> """
+			body += """<td>""" + str(solicitud[6]) + """ </td> """
+			body += """<td>""" + solicitud[7] + """ </td> """
+
+
+		body += """</tr> </table> </body> </html>"""
+
+		pdf = pdfkit.from_string(body, False)
+
 	elif solicitud == "Clientes":
-		rendered = render_template('pdf_template.html', name="culo", location="adios")
-		pdf = pdfkit.from_string(rendered, False)
+		cursor.execute("SELECT * FROM view_clientes ")
+		solicitudes = cursor.fetchall()
+
+		body = """
+				<!DOCTYPE html>
+				<html>
+				<head>
+					<title>Clientes</title>
+					<meta name="pdfkit-page-size" content="Legal"/>
+					<meta name="pdfkit-orientation" content="Landscape"/>
+					<meta charset="utf-8">
+				</head>
+				<body>
+		    	<table width="100%">
+				  <tr>
+				    <th>Nombre</th>
+				    <th>Email</th>
+				    <th>RIF</th>
+				    <th>Código Postal</th>
+				    <th>Cantidad de Solicitudes</th>
+				  </tr>
+		"""
+		for solicitud in solicitudes:
+			body += """ <tr style="text-align:center;"> <td>""" + solicitud[0] + """ </td> """
+			body += """<td>""" + solicitud[1] + """ </td> """
+			body += """<td>J-""" + str(solicitud[2]) + """ </td> """
+			body += """<td>""" + str(solicitud[3]) + """ </td> """
+			body += """<td>""" + str(solicitud[4]) + """ </td> """
+
+
+		body += """</tr> </table> </body> </html>"""
+
+		pdf = pdfkit.from_string(body, False)
+
 	elif solicitud == "Destinos":
-		rendered = render_template('pdf_template.html', name="culo", location="adios")
-		pdf = pdfkit.from_string(rendered, False)
-	else:
-		rendered = render_template('pdf_template.html', name="fdgd", location="venezzsdgguela")
-		pdf = pdfkit.from_string(rendered, False)
+		cursor.execute("SELECT * FROM view_destinos ")
+		solicitudes = cursor.fetchall()
+
+		body = """
+				<!DOCTYPE html>
+				<html>
+				<head>
+					<title>Clientes</title>
+					<meta name="pdfkit-page-size" content="Legal"/>
+					<meta name="pdfkit-orientation" content="Landscape"/>
+					<meta charset="utf-8">
+				</head>
+				<body>
+		    	<table width="100%">
+				  <tr>
+				    <th>Código Postal</th>
+				    <th>Dirección de Envío</th>
+				    <th>Cantidad de Solicitudes</th>
+				  </tr>
+		"""
+		for solicitud in solicitudes:
+			body += """ <tr style="text-align:center;"> <td>""" + str(solicitud[0]) + """ </td> """
+			body += """<td>""" + solicitud[1] + """ </td> """
+			body += """<td>""" + str(solicitud[2]) + """ </td> """
+
+
+		body += """</tr> </table> </body> </html>"""
+
+		pdf = pdfkit.from_string(body, False)
+
+	elif solicitud == "Facturas Canceladas":
+		cursor.execute("SELECT * FROM view_facturas_cancelacion ")
+		solicitudes = cursor.fetchall()
+
+		body = """
+				<!DOCTYPE html>
+				<html>
+				<head>
+					<title>Facturas Canceladas</title>
+					<meta charset="utf-8">
+				</head>
+				<body>
+		    	<table width="100%">
+				  <tr>
+				    <th>Fecha de Cancelación</th>
+				    <th>Fecha de Vencimiento</th>
+				    <th>Monto</th>
+				    <th>Comercio</th>
+				  </tr>
+		"""
+		for solicitud in solicitudes:
+			body += """ <tr style="text-align:center;"> <td>""" + str(solicitud[0]) + """ </td> """
+			body += """<td>""" + str(solicitud[1]) + """ </td> """
+			body += """<td>""" + str(solicitud[2]) + """ </td> """
+			body += """<td>""" + solicitud[3] + """ </td> """
+
+
+		body += """</tr> </table> </body> </html>"""
+
+		pdf = pdfkit.from_string(body, False)
+
+	elif solicitud == "Facturas Vigentes":
+		cursor.execute("SELECT * FROM view_facturas_vigentes ")
+		solicitudes = cursor.fetchall()
+
+		body = """
+				<!DOCTYPE html>
+				<html>
+				<head>
+					<title>Facturas Vigentes</title>
+					<meta charset="utf-8">
+				</head>
+				<body>
+		    	<table width="100%">
+				  <tr>
+				    <th>Fecha de Vencimiento</th>
+				    <th>Monto</th>
+				    <th>Comercio</th>
+				  </tr>
+		"""
+		for solicitud in solicitudes:
+			body += """ <tr style="text-align:center;"> <td>""" + str(solicitud[0]) + """ </td> """
+			body += """<td>""" + str(solicitud[1]) + """ </td> """
+			body += """<td>""" + solicitud[2] + """ </td> """
+
+
+		body += """</tr> </table> </body> </html>"""
+
+		pdf = pdfkit.from_string(body, False)
+
+	elif solicitud == "Facturas Vencidas":
+		cursor.execute("SELECT * FROM view_facturas_vencidas ")
+		solicitudes = cursor.fetchall()
+
+		body = """
+				<!DOCTYPE html>
+				<html>
+				<head>
+					<title>Facturas Vencidas</title>
+					<meta charset="utf-8">
+				</head>
+				<body>
+		    	<table width="100%">
+				  <tr>
+				    <th>Fecha de Vencimiento</th>
+				    <th>Monto</th>
+				    <th>Comercio</th>
+				  </tr>
+		"""
+		for solicitud in solicitudes:
+			body += """ <tr style="text-align:center;"> <td>""" + str(solicitud[0]) + """ </td> """
+			body += """<td>""" + str(solicitud[1]) + """ </td> """
+			body += """<td>""" + solicitud[2] + """ </td> """
+
+
+		body += """</tr> </table> </body> </html>"""
+
+		pdf = pdfkit.from_string(body, False)
+
+
 
 
 	response = make_response(pdf)
 	response.headers['Content-Type'] = 'application/pdf'
-	response.headers['Content-Disposition'] = 'inline; filename=output.pdf'
+	response.headers['Content-Disposition'] = 'inline; filename=reporte.pdf'
 
 	return response
 
@@ -556,6 +772,12 @@ class solicitarDistribucion(Resource):
 
 			cursor.execute("INSERT INTO encargo (cedula, nombre, telefono, correo, peso, fechaCompra, fechaEstimada, costo, tracking, idDireccion, idEstatus, idCliente, " +
 						   "idCategoriaPeso) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)", ( data['cedula'], data['nombre'], data['telefono'], data['correo'], data['peso'], fechaActual, fechaEstimada, costo, tracking, idDireccion, idEstatus, idCliente, idCategoriaPeso  ) )
+				
+			fechaVencimientoFactura = fechaActual + timedelta(days=15)
+			cursor.execute("INSERT INTO factura (fechaVencimiento, monto, idCliente, idEstadoFactura, idEncargo)" + 
+						   "VALUES (%s,%s,%s,%s,%s)", (fechaVencimientoFactura, costo, idCliente, 1, con.insert_id()) )
+
+
 			con.commit()
 
 				
