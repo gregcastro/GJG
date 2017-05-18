@@ -1,0 +1,98 @@
+{% extends "layout.html" %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-datetimepicker.min.css') }}">
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="{{ url_for('static', filename='js/moment.js') }}"></script>
+<script src="{{ url_for('static', filename='js/bootstrap-datetimepicker.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/reportes.js') }}"></script>
+{% endblock %}
+
+
+{% block content %}
+
+<!-- Page Content -->
+<div id="page-content-wrapper">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                {% if error is defined %}
+                <p style="color:red;">{{error}}</p>
+                {% endif %}
+                <h1>GJG C.A</h1>
+                
+                <a href="#menu-toggle" class="btn btn-default" id="menu-toggle">Menu</a>
+                
+                <div class="row">
+                    
+                    <div class="col-md-3 text-center">
+                        <select class="form-control" id="tipo" name="tipo">
+                            <option> Solicitudes Despachadas </option>
+                            <option> Solicitudes Pendientes </option>
+                            <option> Clientes </option>
+                            <option> Destinos </option>
+                            <option> Facturas </option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-1 text-center">
+                        <input type="button" class="btn btn-default" value="Generar" id="boton_generar">
+                    </div>
+
+                    
+                </div>
+
+                <div class="row">
+                    <!-- Calendarios -->
+                    <div class='col-sm-2'>
+                            <div class='input-group date' id='datetimepicker6'>
+                                <input id="fecha1" type='text' class="form-control" />
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+                    </div>
+                    <div class='col-sm-2'>
+                            <div class='input-group date' id='datetimepicker7'>
+                                <input id="fecha2" type='text' class="form-control" />
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+                    </div>
+                </div>
+    
+
+                    <form action="pdf_generate" id="formulario_real" method="POST" style="display:none;">
+                        <input id="solicitud_real" type="text" name="solicitud">
+                        <input id="desde_real" type="text" name="desde">
+                        <input id="hasta_real" type="text" name="hasta">
+                    </form>
+    
+
+
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /#page-content-wrapper -->
+
+
+<script type="text/javascript">
+    $(function () {
+        $('#datetimepicker6').datetimepicker();
+        $('#datetimepicker7').datetimepicker({
+            useCurrent: false //Important! See issue #1075
+        });
+        $("#datetimepicker6").on("dp.change", function (e) {
+            $('#datetimepicker7').data("DateTimePicker").minDate(e.date);
+        });
+        $("#datetimepicker7").on("dp.change", function (e) {
+            $('#datetimepicker6').data("DateTimePicker").maxDate(e.date);
+        });
+    });
+</script>
+
+
+{% endblock %}

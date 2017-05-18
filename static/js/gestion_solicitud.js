@@ -2,8 +2,8 @@ $(document).ready(function(){
   
 $( "#botonBuscar" ).click(function() {
 
-                    // Si se presiona el boton y una fecha no se selecciono entonces se indica (ambas fechas son requeridas)
-                    // Arreglar las fechas que se muestran en la tabla..
+  // Si se presiona el boton y una fecha no se selecciono entonces se indica (ambas fechas son requeridas)
+  // Arreglar las fechas que se muestran en la tabla..
   $("#tab_logic tbody > tr").remove()
   var desde = new Date( $('#fecha1').val() );
   var hasta = new Date( $('#fecha2').val() );
@@ -90,6 +90,11 @@ function editarSolicitud(tracking) {
   // $('#myModal').modal('toggle');
   $('#editModal').modal('show');
   // $('#myModal').modal('hide');
+
+  console.log($('#sel').val() );
+
+
+
 }
 
 

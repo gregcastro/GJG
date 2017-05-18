@@ -70,6 +70,22 @@ mysql.init_app(app)
 url = 'http://localhost:5000'
 headers = {'content-type': 'application/json'}
 
+
+@app.route('/<name>/<location>')
+def pdf_template(name, location):
+
+	rendered = render_template('pdf_template.html', name=name, location=location)
+	pdf = pdfkit.from_string(rendered, False)
+
+	response = make_response(pdf)
+	response.headers['Content-Type'] = 'application/pdf'
+	response.headers['Content-Disposition'] = 'inline; filename=output.pdf'
+
+	return response
+
+
+
+
 #===== Index y Login =====#
 @app.route('/', methods=['GET','POST'])
 def index():
@@ -192,15 +208,21 @@ def get_solicitudes_admin():
 		estatus = str(request.args['tipo'])
 
 		print( estatus )
+		print(desde)
+		print(hasta)
 
 		# fecha = new Date( request.args['desde'] )
 		# print ('fecha = ', fecha)
 
 		con = mysql.connect()
 		cursor = con.cursor()
-
-		cursor.execute("SELECT * FROM view_solicitudes WHERE estatus=%s AND fechaCompra BETWEEN %s AND %s ", (estatus, desde, hasta) )
+		if estatus == "":
+			cursor.execute("SELECT * FROM view_solicitudes WHERE fechaCompra BETWEEN %s AND %s ", (desde, hasta) )
+		else:
+			cursor.execute("SELECT * FROM view_solicitudes WHERE estatus=%s AND fechaCompra BETWEEN %s AND %s ", (estatus, desde, hasta) )
+		
 		solicitudes = cursor.fetchall()
+		print(solicitudes)
 		data = json.dumps(solicitudes)
 
 		return '{}'.format(data)
@@ -209,13 +231,15 @@ def get_solicitudes_admin():
 
 @app.route('/editar-solicitud', methods=['POST'])
 def editar_solicitud():
-	if(session.get('logged_in')):
 
+	if(session.get('logged_in')):
+		print( request.form )
 		idEstado = request.form['estado']
 		tracking = int(request.form['tracking'])
+		print( tracking )
 
 		print (idEstado)
-		print( tracking )
+		# print( tracking )
 
 
 		con = mysql.connect()
@@ -232,7 +256,51 @@ def editar_solicitud():
 
 @app.route('/reportes')
 def generar_reporte():
-	return render_template("index.html")
+	return render_template("reportes.html")
+
+
+@app.route('/pdf_generate', methods=['POST'])
+def pdf_generate():
+	solicitud = request.form['solicitud']
+	desde = request.form['desde']
+	hasta = request.form['hasta']
+
+
+	if solicitud == "Solicitudes Despachadas":
+
+		con = mysql.connect()
+		cursor = con.cursor()
+		cursor.execute("SELECT * FROM view_solicitudes WHERE estatus!=%s AND fechaCompra BETWEEN %s AND %s ", ("POR PROCESAR", desde, hasta) )
+		
+		solicitudes = cursor.fetchall()
+		print(solicitudes)
+		data = json.dumps(solicitudes)
+		print(data)
+
+		rendered = render_template('pdf_template.html', name="culo", location="adios")
+		pdf = pdfkit.from_string(rendered, False)
+
+	elif solicitud == "Solicitudes Pendientes":
+		rendered = render_template('pdf_template.html', name="culo", location="adios")
+		pdf = pdfkit.from_string(rendered, False)
+	elif solicitud == "Clientes":
+		rendered = render_template('pdf_template.html', name="culo", location="adios")
+		pdf = pdfkit.from_string(rendered, False)
+	elif solicitud == "Destinos":
+		rendered = render_template('pdf_template.html', name="culo", location="adios")
+		pdf = pdfkit.from_string(rendered, False)
+	else:
+		rendered = render_template('pdf_template.html', name="fdgd", location="venezzsdgguela")
+		pdf = pdfkit.from_string(rendered, False)
+
+
+	response = make_response(pdf)
+	response.headers['Content-Type'] = 'application/pdf'
+	response.headers['Content-Disposition'] = 'inline; filename=output.pdf'
+
+	return response
+
+
 
 #===== Fin Adminstrador =====#
 
@@ -573,14 +641,14 @@ api.add_resource(solicitudesPorDespachar, '/solicitudes-por-despachar')
 # 1) Solicitudes recibidas del comercio?
 
 
-@app.route('/pdf')
-def pdf_template():
+# @app.route('/pdf')
+# def pdf_template():
 
 	# path_wkthmltopdf = 'C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe'
 	# path_wkthmltopdf = r'C:\Program Files\wkhtmltopdf\\bin\wkhtmltopdf.exe'
 	# path_wkthmltopdf = b'C:\Program Files\wkhtmltopdf\pin\wkhtmltopdf.exe'
 	# config = pdfkit.configuration(wkhtmltopdf=path_wkthmltopdf)
-	pdfkit.from_string('Hello!', False)
+	# pdfkit.from_string('Hello!', False)
 	# rendered = render_template('pdf_template.html', name="Greg", location="Venezuela")
 	# pdf = pdfkit.from_string(rendered, False)
 
@@ -588,7 +656,7 @@ def pdf_template():
 	# responde.headers['Content-Type'] = 'application/pdf'
 	# response.headers['Content-Disposition'] = 'inline; filename=output.pdf'
 	# return "hola"
-	return response
+	# return response
 
 if __name__ == '__main__':
 	app.run(threaded=True,debug=True)
