@@ -71,18 +71,21 @@ url = 'http://localhost:5000'
 headers = {'content-type': 'application/json'}
 
 
-@app.route('/<name>/<location>')
-def pdf_template(name, location):
 
-	rendered = render_template('pdf_template.html', name=name, location=location)
-	pdf = pdfkit.from_string(rendered, False)
+#=========== POR HACER =============#
 
-	response = make_response(pdf)
-	response.headers['Content-Type'] = 'application/pdf'
-	response.headers['Content-Disposition'] = 'inline; filename=output.pdf'
+# Cuando se recarga la pagina en Reportes y por ejemplo se tiene colocado 'Dia', vuelven a aparecer los dos campos de fecha.
 
-	return response
+# Gestion de solicitudes de un usuario comun (comercio)
 
+# Evaluar la posibilidad de buscar por tracking en gestion de solicitud (input y boton separados)
+
+# Mostrar la fecha bonita en INDEX.HTML cuando se sigue el tracking como cliente 
+
+# Que los PDFs de vean bonitos
+
+
+#=========== POR HACER =============#
 
 
 
@@ -93,6 +96,8 @@ def index():
 	# Realizar pruebas en el token para ver si funciona lo del tiempo de vencimiento.
 	if(request.method == 'GET'): 
 		if(session.get('logged_in')):
+			if session.get('logged_in') == 'admin':
+				return render_template("index.html", admin=session.get('logged_in'))
 			return render_template("index.html", current_user=session.get('logged_in'))
 		return render_template("index.html")
 	else:
@@ -125,7 +130,6 @@ def login_admin():
 		session['logged_in'] = 'admin'
 		return render_template("index.html", admin=request.form['correo'])
 	
-
 
 
 #===== Logout (Cerrar Sesión) =====#
@@ -179,10 +183,10 @@ def consultar_tarifa():
 
 	return render_template("index.html")
 
-
-
-
 #===== Fin Cliente o Adminstrador =====#
+
+
+
 
 
 #===== Cliente Común =====#
@@ -192,12 +196,63 @@ def gestionar_solicitud_cliente():
 
 #===== Fin Cliente Común =====#
 
+
+
+
 #===== Adminstrador =====#
+@app.route('/rastrear_tracking')
+def rastrear_tracking():
+	tracking = request.args['tracking']
+	con = mysql.connect()
+	cursor = con.cursor()
+
+	if(session.get('logged_in') == 'admin'):
+		tracking = request.args['tracking']
+
+		cursor.execute("SELECT * FROM encargo WHERE tracking=%s ", tracking )
+		encargo = cursor.fetchall()
+
+		data = json.dumps(encargo)
+
+		return '{}'.format(data)
+
+	elif (session.get('logged_in')):
+
+		cursor.execute("SELECT idEncargo FROM encargo WHERE tracking=%s ", tracking )
+		idEncargo = cursor.fetchone()
+		idEncargo = idEncargo[0]
+
+		try:
+			decod = jwt.decode(session.get('logged_in'), 'secret')
+		except jwt.InvalidTokenError:
+			return errors['ErrorAlDecodificar'], 412
+
+		print(decod['sub'])
+
+		cursor.execute("SELECT idCliente FROM cliente WHERE correo=%s", (decod['sub']))
+		idCliente = cursor.fetchone()
+		idCliente = idCliente[0]
+
+
+		cursor.execute("SELECT * FROM view_historial_paquete WHERE idCliente=%s AND idEncargo=%s", (idCliente, idEncargo) )
+		historial = cursor.fetchall()
+
+		print(historial)
+
+		data = json.dumps(historial)
+
+		return '{}'.format(data)
+
+
+	return render_template("index.html")
+
+
 @app.route('/gestion-solicitud-admin')
 def gestionar_solicitud_admin():
 	if(session.get('logged_in')):
 		return render_template("gestion_solicitud.html", admin=session.get('logged_in'))
 	return render_template("index.html")
+
 
 @app.route('/solicitudes-admin')
 def get_solicitudes_admin():
@@ -229,48 +284,84 @@ def get_solicitudes_admin():
 	return render_template("index.html")
 
 
+@app.route('/estatusEncargo')
+def get_estatus_encargo():
+	if(session.get('logged_in')):
+
+		tracking = request.args['tracking']
+
+		con = mysql.connect()
+		cursor = con.cursor()
+		cursor.execute("SELECT idEstatus FROM encargo WHERE tracking=%s ", tracking )
+		
+		data = cursor.fetchone()
+
+		data = data[0]
+		data = json.dumps(data)
+
+
+		return '{}'.format(data)
+	return render_template("index.html")
+
+
 @app.route('/editar-solicitud', methods=['POST'])
 def editar_solicitud():
 
 	if(session.get('logged_in')):
-		print( request.form )
+		# Obtengo parametros del form
 		idEstado = request.form['estado']
 		tracking = int(request.form['tracking'])
-		print( tracking )
-
-		print (idEstado)
-		# print( tracking )
-
+		fecha = request.form['fecha']
 
 		con = mysql.connect()
 		cursor = con.cursor()
 
+		# Si el estatus no es ENTREGADO entonces realizo una insercion en el historial de donde se encuentra el paquete
+		if idEstado != 4:
+			locacion = request.form['locacion']
+			# Busco el idEncargo perteneciente al encargo que se esta editando
+			cursor.execute("SELECT idEncargo FROM encargo WHERE tracking=%s ", tracking )
+			idEncargo = cursor.fetchone()
+			idEncargo = idEncargo[0]
+			# Inserto en historial la locacion y fecha correspondiente
+			cursor.execute("INSERT INTO historial (fecha, locacion, idEncargo) VALUES(%s,%s,%s)", (fecha, locacion, idEncargo) )
+		
+		# Se actualiza el estado del encargo
 		cursor.execute("UPDATE encargo SET idEstatus = %s WHERE tracking = %s ", (idEstado, tracking) )
 		con.commit()
 
-		return render_template("gestion_solicitud.html", actualizado='Actualización de solicitud exitosa')
+		return render_template("gestion_solicitud.html", actualizado='Actualización de solicitud exitosa', admin=session.get('logged_in') )
 	return render_template("index.html")
-
-
 
 
 @app.route('/reportes')
 def generar_reporte():
-	return render_template("reportes.html")
+	if(session.get('logged_in')):
+		return render_template("reportes.html", admin=session.get('logged_in'))
+	return render_template("index.html")
 
 
 @app.route('/pdf_generate', methods=['POST'])
 def pdf_generate():
 	solicitud = request.form['solicitud']
-	desde = request.form['desde']
-	hasta = request.form['hasta']
+	fecha1 = request.form['desde']
+	fecha2 = request.form['hasta']
 
+	print(fecha1)
+	print(fecha2)
+	
 	con = mysql.connect()
 	cursor = con.cursor()
 
 	if solicitud == "Solicitudes Despachadas":
 
-		cursor.execute("SELECT * FROM view_solicitudes WHERE estatus!=%s AND fechaCompra BETWEEN %s AND %s ", ("POR PROCESAR", desde, hasta) )
+		tipo_fecha = request.form['tipo_fecha']
+
+		if tipo_fecha == 'Día':
+			cursor.execute("SELECT * FROM view_solicitudes WHERE estatus!=%s AND fechaCompra=%s ", ("POR PROCESAR", fecha1) )
+		else:
+			cursor.execute("SELECT * FROM view_solicitudes WHERE estatus!=%s AND fechaCompra BETWEEN %s AND %s ", ("POR PROCESAR", fecha1, fecha2) )
+		
 		solicitudes = cursor.fetchall()
 
 		body = """
@@ -283,6 +374,7 @@ def pdf_generate():
 					<meta charset="utf-8">
 				</head>
 				<body>
+				<center> <h1>Solicitudes Despachadas</h1> </center>
 		    	<table width="100%">
 				  <tr>
 				    <th># Orden</th>
@@ -311,8 +403,13 @@ def pdf_generate():
 		pdf = pdfkit.from_string(body, False)
 
 	elif solicitud == "Solicitudes Pendientes":
+		tipo_fecha = request.form['tipo_fecha']
+		if tipo_fecha == 'Día':
+			cursor.execute("SELECT * FROM view_solicitudes WHERE estatus=%s AND fechaCompra=%s ", ("POR PROCESAR", fecha1) )
+		else:
+			cursor.execute("SELECT * FROM view_solicitudes WHERE estatus=%s AND fechaCompra BETWEEN %s AND %s ", ("POR PROCESAR", fecha1, fecha2) )
+		
 
-		cursor.execute("SELECT * FROM view_solicitudes WHERE estatus=%s AND fechaCompra BETWEEN %s AND %s ", ("POR PROCESAR", desde, hasta) )
 		solicitudes = cursor.fetchall()
 
 		body = """
@@ -325,6 +422,7 @@ def pdf_generate():
 					<meta charset="utf-8">
 				</head>
 				<body>
+				<center> <h1>Solicitudes Pendientes</h1> </center>
 		    	<table width="100%">
 				  <tr>
 				    <th># Orden</th>
@@ -353,7 +451,7 @@ def pdf_generate():
 		pdf = pdfkit.from_string(body, False)
 
 	elif solicitud == "Clientes":
-		cursor.execute("SELECT * FROM view_clientes ")
+		cursor.execute("SELECT * FROM view_clientes")
 		solicitudes = cursor.fetchall()
 
 		body = """
@@ -366,6 +464,7 @@ def pdf_generate():
 					<meta charset="utf-8">
 				</head>
 				<body>
+				<center> <h1>Clientes</h1> </center>
 		    	<table width="100%">
 				  <tr>
 				    <th>Nombre</th>
@@ -395,12 +494,13 @@ def pdf_generate():
 				<!DOCTYPE html>
 				<html>
 				<head>
-					<title>Clientes</title>
+					<title>Destinos</title>
 					<meta name="pdfkit-page-size" content="Legal"/>
 					<meta name="pdfkit-orientation" content="Landscape"/>
 					<meta charset="utf-8">
 				</head>
 				<body>
+				<center> <h1>Destinos</h1> </center>
 		    	<table width="100%">
 				  <tr>
 				    <th>Código Postal</th>
@@ -430,6 +530,7 @@ def pdf_generate():
 					<meta charset="utf-8">
 				</head>
 				<body>
+				<center> <h1>Facturas Canceladas</h1> </center>
 		    	<table width="100%">
 				  <tr>
 				    <th>Fecha de Cancelación</th>
@@ -461,6 +562,7 @@ def pdf_generate():
 					<meta charset="utf-8">
 				</head>
 				<body>
+				<center> <h1>Facturas Vigentes</h1> </center>
 		    	<table width="100%">
 				  <tr>
 				    <th>Fecha de Vencimiento</th>
@@ -490,6 +592,7 @@ def pdf_generate():
 					<meta charset="utf-8">
 				</head>
 				<body>
+				<center> <h1>Facturas Vencidas</h1> </center>
 		    	<table width="100%">
 				  <tr>
 				    <th>Fecha de Vencimiento</th>
@@ -822,45 +925,13 @@ class actualizarEstadoSolicitud(Resource):
 
 		return "Estatus cambiado exitosamente (cambiar esto)"
 
-class solicitudesPorDespachar(Resource):
-	def get(self):
 
-		con = mysql.connect()
-		cursor = con.cursor()
-		cursor.execute("SELECT * FROM view_solicitudes_por_despachar ")
-
-		encargos = cursor.fetchall()
-		print(encargos)
-
-		#Tengo que convertirlo a json, darle a todos las filas una clave (clave-valor)
-		return json.dumps(encargos)
-
-###
-class getPDF(Resource):
-	def get(self):
-
-		rendered = render_template('pdf_template.html', name="Greg", location="Venezuela")
-		pdf = pdfkit.from_string(rendered, False)
-
-		response = make_response(pdf)
-		responde.headers['Content-Type'] = 'application/pdf'
-		response.headers['Content-Disposition'] = 'inline; filename=output.pdf'
-
-		return response
-###
 
 api.add_resource(Register, '/registro')
 api.add_resource(Login, '/login')
 api.add_resource(consultarTarifa, '/consultarTarifa/<string:codPostal>/<float:peso>')
 api.add_resource(solicitarDistribucion, '/solicitarDistribucion')
 api.add_resource(actualizarEstadoSolicitud, '/estado-solicitud')
-api.add_resource(solicitudesPorDespachar, '/solicitudes-por-despachar')
-#solicitudes despachas es igual a "por despachar"
-
-# api.add_resource(getPDF, '/pdf')
-
-#DUDAS
-# 1) Solicitudes recibidas del comercio?
 
 
 # @app.route('/pdf')
@@ -882,6 +953,7 @@ api.add_resource(solicitudesPorDespachar, '/solicitudes-por-despachar')
 
 if __name__ == '__main__':
 	app.run(threaded=True,debug=True)
+	# app.run(threaded=True,debug=True, host='192.168.1.109', port=3000)
 
 
 

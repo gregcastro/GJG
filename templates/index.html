@@ -2,24 +2,165 @@
 
 {% block content %}
 
+<style>
+    .bold {
+        font-weight: bold;
+    }
+
+    
+</style>
+
 <!-- Page Content -->
 <div id="page-content-wrapper">
     <div class="container-fluid">
         <div class="row">
-            <div class="col-lg-12 text-center">
+            <!-- Menu SideBar -->
+            <div class="col-md-3">
+                <a href="#menu-toggle" class="btn btn-default" id="menu-toggle">Menu</a>
+            </div>
+
+            <div class="col-md-3 col-md-offset-1 text-center">
                 {% if error is defined %}
                 <p style="color:red;">{{error}}</p>
                 {% endif %}
                 <h1>GJG C.A</h1>
                 <p>Rastrea tu paquete</p>
                 
-                <input type="text" name="">
-                <button type="sumbit">Buscar</button> <br>
-                <a href="#menu-toggle" class="btn btn-default" id="menu-toggle">Menu</a>
+                <input type="text" id="tracking" class="form-control" >
+                <button type="submit" id="buscar_track" class="btn btn-default">Buscar</button> <br>
+
             </div>
         </div>
+        
+            
+
+        <div class="row" style="display:none;" id="datos_tracking">
+
+            <div class="col-md-3 col-md-offset-3 text-right bold">
+                <p># de Orden</p>
+                <p>Cédula</p>
+                <p>Nombre</p>
+                <p>Teléfono</p>
+                <p>Correo</p>
+                <p>Peso</p>
+                <p>Fecha de Compra</p>
+                <p>Fecha Estimada</p>
+                <p>Costo</p>
+            </div>
+
+            <div class="col-md-3">
+                <p id="orden"></p>
+                <!-- <p id="info_pagador"></p> -->
+                <p id="cedula"></p>
+                <p id="nombre"></p>
+                <p id="telefono"></p>
+                <p id="correo"></p>
+                <!-- <p id="datos_paquete"></p> -->
+                <p id="peso"></p>
+                <p id="fecha_compra"></p>
+                <p id="fecha_estimada"></p>
+                <p id="costo"></p>
+            </div>
+
+        </div>
+
+
+        <div class="col-md-6 col-md-offset-3" style="display:none;" id="datos_tracking2">
+            <table class="table table-bordered table-hover" id='tab_logic'>
+                <thead>
+                  <tr>
+                    <th>Fecha</th>
+                    <th>Locación</th>
+                  </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+              </table>
+        </div>
+
+
+
+        
+
     </div>
 </div>
 <!-- /#page-content-wrapper -->
+
+<script>
+    $(document).ready(function(){
+
+        $('#buscar_track').click(function() {
+
+        var tracking = $('#tracking').val();
+        console.log(tracking);
+
+        $.ajax
+        ({
+          type:"GET" ,
+          url: '/rastrear_tracking?tracking='+tracking,
+          dataType: "text",
+          error: function (xhr, ajaxOptions, thrownError)
+          {
+              console.log(xhr.status); console.log(thrownError); console.log(ajaxOptions);
+          },
+          success: function(data)
+          {    
+
+                if (data == '[]') {
+                    $('#datos_tracking').css('display','none');
+                    $('#datos_tracking2').css('display','none');
+                    alert('El tracking no existe');
+                } else {
+
+
+
+                    
+
+                    encargo = jQuery.parseJSON(data);
+
+                    // Si el tamano de encargo[0] es 4 significa que es un tracking de cliente, en caso contrario es de admin
+
+                    if (encargo[0].length == 4) {
+
+                        N = encargo.length;
+
+                        for (var i = 0; i < N; i++) {
+                            $('#tab_logic').append('<tr id="addr'+ i +'"></tr>');
+                            $('#addr'+i).html("<td>" + encargo[i][0] +"</td> <td> "+ encargo[i][1] +" </td>");
+                        }
+                        $('#datos_tracking').css('display','none');
+                        $('#datos_tracking2').css('display','inline');
+                    } else {
+                        $('#orden').text(encargo[0][9]);
+                        // $('#info_pagador').text('Información del Pagador');
+                        $('#cedula').text(encargo[0][1]);
+                        $('#nombre').text(encargo[0][2]);
+                        $('#telefono').text(encargo[0][3]);
+                        $('#correo').text(encargo[0][4]);
+                        // $('#datos_paquete').text('Información del Paquete');
+                        $('#peso').text(encargo[0][5]);
+                        $('#fecha_compra').text(encargo[0][6]);
+                        $('#fecha_estimada').text(encargo[0][7]);
+                        $('#costo').text(encargo[0][8]);
+                        $('#datos_tracking2').css('display','none');
+                        $('#datos_tracking').css('display','inline');
+                    }
+
+                        
+                }
+
+
+                   
+              
+          }
+        });
+
+    });
+
+
+    }); //Fin de document ready
+
+</script>
 
 {% endblock %}

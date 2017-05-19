@@ -128,13 +128,27 @@
             <form id="form-edit" action="/editar-solicitud" method="post" data-toggle="validator">
           		
           		<div class="form-group">
+          			<label for="tracking"># De Orden</label>
           			<input type="text" class="form-control" id="tracking" name="tracking" readonly>
+            	</div>
+
+            	<div class="form-group">
+          			<label for="fecha">Fecha</label>
+          			<input type="text" class="form-control" id="fecha" name="fecha" readonly>
+            	</div>
+
+            	<div class="form-group">
+          			<label for="locacion" id="locacion_label">Locación</label>
+          			<input type="text" class="form-control" id="locacion" name="locacion" required="true">
             	</div>
 
           		<div class="form-group">
 				  <label for="sel">Estado</label>
 				  <select class="form-control" id="sel" name="estado">
-
+					<option value="1">POR PROCESAR</option>
+					<option value="2">PROCESADO</option>
+					<option value="3">EN RUTA</option>
+					<option value="4">ENTREGADO</option>
 				  </select>
 				</div>
 
