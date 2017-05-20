@@ -55,7 +55,7 @@
 		            <div class='input-group date'>
 		                <input id="fecha1" type='text' placeholder="Fecha Inicial" class="form-control datepicker" />
 		                <span class="input-group-addon">
-		                    <span class="glyphicon glyphicon-calendar"></span>
+		                    <span id="calendar1" class="glyphicon glyphicon-calendar"></span>
 		                </span>
 		            </div>
 		        </div>
@@ -65,7 +65,7 @@
 		            <div class='input-group date'>
 		                <input id="fecha2" type='text' placeholder="Fecha Final" class="form-control datepicker" />
 		                <span class="input-group-addon">
-		                    <span class="glyphicon glyphicon-calendar"></span>
+		                    <span id="calendar2" class="glyphicon glyphicon-calendar"></span>
 		                </span>
 		            </div>
 		        </div>
@@ -190,6 +190,15 @@
 
 <script type="text/javascript">
     $(function () {
+
+    	$("#calendar1").click(function() {
+          $("#fecha1").focus();
+        });
+
+        $("#calendar2").click(function() {
+          $("#fecha2").focus();
+        });
+
     	$('.datepicker').datepicker();
         $.datepicker.regional['es'] = {
           closeText: 'Cerrar',
