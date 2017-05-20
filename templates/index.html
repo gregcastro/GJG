@@ -1,5 +1,14 @@
 {% extends "layout.html" %}
 
+{% block extra_head %} 
+<link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-datetimepicker.min.css') }}">
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="{{ url_for('static', filename='js/moment.js') }}"></script>
+<script src="{{ url_for('static', filename='js/bootstrap-datetimepicker.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/gestion_solicitud.js') }}"></script>
+{% endblock %}
+
 {% block content %}
 
 <style>
@@ -136,12 +145,31 @@
 
     </div>
 
+    <div id="dialog" title="¡Atención!">
+      <p>El tracking ingresado no existe.</p>
+    </div>
+
 </div>
 
 <!-- /#page-content-wrapper -->
 
 <script>
-    $(document).ready(function(){
+    $(function () {
+
+        $("#dialog").dialog({
+          autoOpen : false,
+          modal : true,
+          show : "blind",
+          hide : "blind",
+          my: "center",
+          at: "center",
+          of: window,
+          buttons: {
+            "Aceptar": function () {
+              $(this).dialog("close");
+            }
+          }  
+        });
 
         $('#buscar_track').click(function() {
 
@@ -163,7 +191,7 @@
                 if (data == '[]') {
                     $('#datos_tracking').css('display','none');
                     $('#datos_tracking2').css('display','none');
-                    alert('El tracking no existe');
+                    $("#dialog").dialog("open");
                 } else {
 
                     encargo = jQuery.parseJSON(data);

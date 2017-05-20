@@ -14,7 +14,7 @@ $(document).ready(function(){
   			if (select_fecha == 'Intervalo de Tiempo') {
 
   				if ($('#fecha1').val() == "" || $('#fecha2').val() == "") {
-			      alert("Los campos de fecha son requeridos");
+			      $("#dialog").dialog("open");
 			    } else {
 			    	var datearray = $('#fecha1').val().split("/");
 	  				var newdate = datearray[1] + '/' + datearray[0] + '/' + datearray[2];
@@ -36,7 +36,7 @@ $(document).ready(function(){
   			} else if (select_fecha == 'Día') {
 
   				if ($('#fecha1').val() == "") {
-  					alert("El campo de fecha es requerido");
+  					$("#dialog2").dialog("open");
   				} else {
 	  				var datearray = $('#fecha1').val().split("/");
 	  				var newdate = datearray[1] + '/' + datearray[0] + '/' + datearray[2];
@@ -103,7 +103,7 @@ $(document).ready(function(){
   			if (select_fecha == 'Intervalo de Tiempo') {
 
   				if ($('#fecha1').val() == "" || $('#fecha2').val() == "") {
-			      alert("Los campos de fecha son requeridos");
+			      $("#dialog").dialog("open");
 			    } else {
 			    	var datearray = $('#fecha1').val().split("/");
 	  				var newdate = datearray[1] + '/' + datearray[0] + '/' + datearray[2];
@@ -125,7 +125,7 @@ $(document).ready(function(){
   			} else if (select_fecha == 'Día') {
 
   				if ($('#fecha1').val() == "") {
-  					alert("El campo de fecha es requerido");
+  					$("#dialog2").dialog("open");
   				} else {
 	  				var datearray = $('#fecha1').val().split("/");
 	  				var newdate = datearray[1] + '/' + datearray[0] + '/' + datearray[2];

@@ -185,11 +185,31 @@
       </div>
     </div>
   </div>
+
+  	<div id="dialog" title="¡Atención!">
+		<p>Los campos de fecha son requeridos.</p>
+	</div>
+
 </div>
 
 
 <script type="text/javascript">
     $(function () {
+
+    	$("#dialog").dialog({
+          autoOpen : false,
+          modal : true,
+          show : "blind",
+          hide : "blind",
+          my: "center",
+          at: "center",
+          of: window,
+          buttons: {
+            "Aceptar": function () {
+              $(this).dialog("close");
+            }
+          }  
+        });
 
     	$("#calendar1").click(function() {
           $("#fecha1").focus();

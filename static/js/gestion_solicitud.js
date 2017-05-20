@@ -38,7 +38,7 @@ $(document).ready(function(){
   $( "#botonBuscar" ).click(function() {
 
     if ($('#fecha1').val() == "" || $('#fecha2').val() == "") {
-      alert("Los campos de fecha son requeridos");
+      $("#dialog").dialog("open");
     } else {
       $("#tab_logic tbody > tr").remove()
       var datearray = $('#fecha1').val().split("/");

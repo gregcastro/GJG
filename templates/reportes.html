@@ -8,11 +8,6 @@
 <script src="{{ url_for('static', filename='js/bootstrap-datetimepicker.min.js') }}"></script>
 <script src="{{ url_for('static', filename='js/reportes.js') }}"></script>
 
-<style type="text/css">
-
-    #ui-datepicker-div button.ui-datepicker-current {display: none;}    
-    
-</style>
 {% endblock %}
 
 
@@ -198,12 +193,38 @@
             </div>
         </div>
     </div>
+
+    <div id="dialog" title="¡Atención!">
+      <p>Los campos de fecha son requeridos.</p>
+    </div>
+
+    <div id="dialog2" title="¡Atención!">
+      <p>El campo de fecha es requerido.</p>
+    </div>
+
 </div>
+
+
 <!-- /#page-content-wrapper -->
 
 
 <script type="text/javascript">
     $(function () {
+
+        $("#dialog, #dialog2").dialog({
+          autoOpen : false,
+          modal : true,
+          show : "blind",
+          hide : "blind",
+          my: "center",
+          at: "center",
+          of: window,
+          buttons: {
+            "Aceptar": function () {
+              $(this).dialog("close");
+            }
+          }  
+        });
 
         $("#calendar1").click(function() {
           $("#fecha1").focus();
