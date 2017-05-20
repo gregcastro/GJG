@@ -52,8 +52,8 @@
             <!-- Calendarios -->
 		    <div class='col-sm-2'>
 		        <div class="form-group">
-		            <div class='input-group date' id='datetimepicker6'>
-		                <input id="fecha1" type='text' placeholder="Fecha Inicial" class="form-control" />
+		            <div class='input-group date'>
+		                <input id="fecha1" type='text' placeholder="Fecha Inicial" class="form-control datepicker" />
 		                <span class="input-group-addon">
 		                    <span class="glyphicon glyphicon-calendar"></span>
 		                </span>
@@ -62,8 +62,8 @@
 		    </div>
 		    <div class='col-sm-2 text-right'>
 		        <div class="form-group">
-		            <div class='input-group date' id='datetimepicker7'>
-		                <input id="fecha2" type='text' placeholder="Fecha Final" class="form-control" />
+		            <div class='input-group date'>
+		                <input id="fecha2" type='text' placeholder="Fecha Final" class="form-control datepicker" />
 		                <span class="input-group-addon">
 		                    <span class="glyphicon glyphicon-calendar"></span>
 		                </span>
@@ -190,16 +190,25 @@
 
 <script type="text/javascript">
     $(function () {
-        $('#datetimepicker6').datetimepicker();
-        $('#datetimepicker7').datetimepicker({
-            useCurrent: false //Important! See issue #1075
-        });
-        $("#datetimepicker6").on("dp.change", function (e) {
-            $('#datetimepicker7').data("DateTimePicker").minDate(e.date);
-        });
-        $("#datetimepicker7").on("dp.change", function (e) {
-            $('#datetimepicker6').data("DateTimePicker").maxDate(e.date);
-        });
+    	$('.datepicker').datepicker();
+        $.datepicker.regional['es'] = {
+          closeText: 'Cerrar',
+          prevText: '<Ant',
+          nextText: 'Sig>',
+          currentText: 'Hoy',
+          monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+          monthNamesShort: ['Ene','Feb','Mar','Abr', 'May','Jun','Jul','Ago','Sep', 'Oct','Nov','Dic'],
+          dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+          dayNamesShort: ['Dom','Lun','Mar','Mié','Juv','Vie','Sáb'],
+          dayNamesMin: ['Do','Lu','Ma','Mi','Ju','Vi','Sá'],
+          weekHeader: 'Sm',
+          dateFormat: 'dd/mm/yy',
+          firstDay: 1,
+          isRTL: false,
+          showMonthAfterYear: false,
+          yearSuffix: ''
+        };
+        $.datepicker.setDefaults($.datepicker.regional['es']);
     });
 </script>
 
