@@ -31,7 +31,7 @@ errors = {
         'status': 410,
     },
    	'ErrorPeticion': {
-        'error': "Error en la peticion",
+        'error': "Error en la petición",
         'status': 400,
     },
     'ErrorAlDecodificar': {
@@ -47,7 +47,7 @@ errors = {
 
 success = {
     'RegistroCompletado': {
-        'message': "Usuario registrado con exito!",
+        'message': "Usuario registrado con éxito",
         'status': 201,
     },
     'LoginCompletado':{
