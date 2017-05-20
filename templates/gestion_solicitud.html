@@ -12,32 +12,58 @@
 {% block content %}
 
 <!-- Page Content -->
-<div id="page-content-wrapper">
+<div id="page-content-wrapper" class="w3-main" style="margin-left:340px;margin-right:40px;">
     <div class="container-fluid">
 
-        <div class="row">
+    	<div class="row">
+      
+	        <div class="col-md-6">
 
-        	<!-- Menu SideBar -->
-            <div class="col-md-3">
-            	<a href="#menu-toggle" class="btn btn-default" id="menu-toggle">Menu</a>
-            </div>
+	            <div class="row">
+
+	                <div class="col-md-9">
+
+	                    <div class="w3-container" style="margin-top:80px" id="showcase">
+	                        <h1 class="w3-jumbo"><b>Distribuidor GJG</b></h1>
+	                        <h1 class="w3-xxxlarge w3-text-red"><b>Gestión de Solicitudes.</b></h1>
+	                        <hr style="width:50px;border:5px solid red" class="w3-round">
+	                                                     
+	                    </div>
+
+	                </div>
+
+	                <div class="col-md-3">
+
+	                    <img style="margin-top:80px" width="180" height="180" src="{{ url_for('static', filename='imagenes/logo.png') }}"">
+
+	                </div>
+
+	            </div>                     
+
+	        </div>
+
+	        <div class="col-md-6"></div>
+	                
+	    </div></br>
+
+        <div class="row">
                
             <!-- Indicar que esta es la fecha en que se realizo la compra -->
             <!-- Calendarios -->
 		    <div class='col-sm-2'>
 		        <div class="form-group">
 		            <div class='input-group date' id='datetimepicker6'>
-		                <input id="fecha1" type='text' class="form-control" />
+		                <input id="fecha1" type='text' placeholder="Fecha Inicial" class="form-control" />
 		                <span class="input-group-addon">
 		                    <span class="glyphicon glyphicon-calendar"></span>
 		                </span>
 		            </div>
 		        </div>
 		    </div>
-		    <div class='col-sm-2'>
+		    <div class='col-sm-2 text-right'>
 		        <div class="form-group">
 		            <div class='input-group date' id='datetimepicker7'>
-		                <input id="fecha2" type='text' class="form-control" />
+		                <input id="fecha2" type='text' placeholder="Fecha Final" class="form-control" />
 		                <span class="input-group-addon">
 		                    <span class="glyphicon glyphicon-calendar"></span>
 		                </span>
@@ -45,14 +71,11 @@
 		        </div>
 		    </div>
 
-	     	<div class='col-sm-2'>
-		    	<button class="btn btn-info" type="submit" id="botonBuscar">Buscar</button>
-        	</div>
-
-        	<div class="col-md-1 ">
-				<p class="text-right"><b>Estado</b></p>
+	     	
+        	<div class="col-md-1 text-right" style="margin-top: 10px;">
+				<p ><b>Estado</b></p>
 			</div>
-    		<div class="col-md-2">
+    		<div class="col-md-2 text-right">
 		  		<select class="form-control" id="sel_solicitudes" name="estado">
 		  			<option> </option>
 		  			<option> POR PROCESAR </option>
@@ -60,12 +83,13 @@
 		  			<option> EN RUTA </option>
 		  			<option> ENTREGADO </option>
 		  		</select>
-
+		  		</br>
     		</div>
-		  		
+    		<div class="col-sm-2 text-right">
+		    	<button class="btn btn-primary" type="submit" id="botonBuscar">Buscar</button></br></br>
+        	</div>		  		
 
         </div> <!-- end row -->
-
 
         <div class="row">
 			{% if actualizado is defined %} 
@@ -77,10 +101,10 @@
 				</script>
 
 			{% endif %}
-			<div class="col-md-12">
+			<div class="col-md-9">
 				<table class="table table-bordered table-hover" id='tab_logic'>
 				    <thead>
-				      <tr>
+				      <tr class="danger">
 				        <th># Orden</th>
 				        <th>Enviado a</th>
 				        <th>Comercio</th>
@@ -153,7 +177,7 @@
 				</div>
 
               <div class="text-aling-center">
-                <button type="submit" class="btn btn-info">Aceptar</button>
+                <button type="submit" class="btn btn-primary">Aceptar</button>
               </div>
             </form>
           </div>
