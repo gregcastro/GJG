@@ -7,6 +7,12 @@
 <script src="{{ url_for('static', filename='js/moment.js') }}"></script>
 <script src="{{ url_for('static', filename='js/bootstrap-datetimepicker.min.js') }}"></script>
 <script src="{{ url_for('static', filename='js/reportes.js') }}"></script>
+
+<style type="text/css">
+
+    #ui-datepicker-div button.ui-datepicker-current {display: none;}    
+    
+</style>
 {% endblock %}
 
 
@@ -94,8 +100,8 @@
 
                         <div id="date1">
                             <label for="datetimepicker6">Fecha Inicial:</label>
-                            <div class='input-group date' id='datetimepicker6'>
-                                <input id="fecha1" placeholder="Fecha Inicial" type='text' class="form-control" />
+                            <div class='input-group date' id='datetimepi6'>
+                                <input id="fecha1" placeholder="Fecha Inicial" type='text' class="form-control datepicker" />
                                 <span id="span1" class="input-group-addon">
                                     <span class="glyphicon glyphicon-calendar"></span>
                                 </span>
@@ -104,40 +110,70 @@
 
                         <div id="date3">
                             <div class=class="col-md-6 text-center">
-                                <label for="datetimepicker6">Mes Inicial:</label>
-                                <div class='input-group date' id='datetimepicker3'>
-                                    <input id="fecha3" type='text' placeholder="Fecha Inicial" class="form-control" />
-                                    <span id="span3" class="input-group-addon">
-                                        <span class="glyphicon glyphicon-calendar"></span>
-                                    </span>
-                                </div>
+                                <label for="select_mes">Mes Inicial:</label>
+                                <select class="form-control" id="select_mes">
+                                  <option value="01">Enero</option>
+                                  <option value="02">Febrero</option>
+                                  <option value="03">Marzo</option>
+                                  <option value="04">Abril</option>
+                                  <option value="05">Mayo</option>
+                                  <option value="06">Junio</option>
+                                  <option value="07">Julio</option>
+                                  <option value="08">Agosto</option>
+                                  <option value="09">Septiembre</option>
+                                  <option value="10">Octubre</option>
+                                  <option value="11">Noviembre</option>
+                                  <option value="12">Diciembre</option>
+                                </select>
                             </div>
                         </div>
 
                         <div id="date4">
                             <div class=class="col-md-6 text-center">
-                                <label for="datetimepicker6">Año Inicial:</label>
-                                <div class='input-group date' id='datetimepicker4'>
-                                    <input id="fecha4" type='text' placeholder="Fecha Inicial"  class="form-control" />
-                                    <span id="span4" class="input-group-addon">
-                                        <span class="glyphicon glyphicon-calendar"></span>
-                                    </span>
-                                </div>
+                                <label for="select_anno">Año Inicial:</label>
+                                <select class="form-control" id="select_anno">
+                                  <option>2017</option>
+                                  <option>2016</option>
+                                  <option>2015</option>
+                                  <option>2014</option>
+                                  <option>2013</option>
+                                  <option>2012</option>
+                                  <option>2011</option>
+                                  <option>2010</option>
+                                </select>
                             </div>
                         </div>
 
                     </div>
 
-                    <div id="date2">
-                        <div class="col-md-6 text-center">
-                            <label for="datetimepicker7">Fecha Final:</label>
-                            <div class='input-group date' id='datetimepicker7'>
-                                <input id="fecha2" type='text' placeholder="Fecha Final" class="form-control" />
-                                <span id="span2" class="input-group-addon">
-                                    <span class="glyphicon glyphicon-calendar"></span>
-                                </span>
+                    
+                    <div class="col-md-6 text-center">
+                        <div id="date2">
+                          <label for="datetimepicker7">Fecha Final:</label>
+                          <div class='input-group date' id='datetimepi7'>
+                              <input id="fecha2" type='text' placeholder="Fecha Final" class="form-control datepicker" />
+                              <span id="span2" class="input-group-addon">
+                                  <span class="glyphicon glyphicon-calendar"></span>
+                              </span>
+                          </div>
+                        </div>
+
+                        <div id="date5">
+                            <div class=class="col-md-6 text-center">
+                                <label for="select_anno2">Año Inicial:</label>
+                                <select class="form-control" id="select_anno2">
+                                  <option>2017</option>
+                                  <option>2016</option>
+                                  <option>2015</option>
+                                  <option>2014</option>
+                                  <option>2013</option>
+                                  <option>2012</option>
+                                  <option>2011</option>
+                                  <option>2010</option>
+                                </select>
                             </div>
                         </div>
+
                     </div>
                     
                 </div>
@@ -168,27 +204,26 @@
 
 <script type="text/javascript">
     $(function () {
-        $('#datetimepicker6').datetimepicker({
-            // format: "DD/MM/YYYY"
-        });
-        $('#datetimepicker7').datetimepicker({
-            useCurrent: false, 
-            // format: "DD/MM/YYYY"
-        });
-        $('#datetimepicker3').datetimepicker({
-            useCurrent: false, 
-            format: "YYYY/MM"
-        });
-        $('#datetimepicker4').datetimepicker({
-            useCurrent: false, 
-            format: "YYYY"
-        });
-        $("#datetimepicker6").on("dp.change", function (e) {
-            $('#datetimepicker7').data("DateTimePicker").minDate(e.date);
-        });
-        $("#datetimepicker7").on("dp.change", function (e) {
-            $('#datetimepicker6').data("DateTimePicker").maxDate(e.date);
-        });
+
+        $('.datepicker').datepicker();
+        $.datepicker.regional['es'] = {
+          closeText: 'Cerrar',
+          prevText: '<Ant',
+          nextText: 'Sig>',
+          currentText: 'Hoy',
+          monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+          monthNamesShort: ['Ene','Feb','Mar','Abr', 'May','Jun','Jul','Ago','Sep', 'Oct','Nov','Dic'],
+          dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+          dayNamesShort: ['Dom','Lun','Mar','Mié','Juv','Vie','Sáb'],
+          dayNamesMin: ['Do','Lu','Ma','Mi','Ju','Vi','Sá'],
+          weekHeader: 'Sm',
+          dateFormat: 'dd/mm/yy',
+          firstDay: 1,
+          isRTL: false,
+          showMonthAfterYear: false,
+          yearSuffix: ''
+        };
+        $.datepicker.setDefaults($.datepicker.regional['es']);
 
         $('#fecha3').hide();
         $('#span3').hide();
@@ -197,6 +232,9 @@
         $('#fecha4').hide();
         $('#span4').hide();
         $('#date4').hide();
+
+        $('#date5').hide();
+        
 
         $('#boton_generar_aux').hide();
 
