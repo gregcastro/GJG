@@ -24,18 +24,29 @@
 
                     <div class="col-md-9">
 
-                        <div class="w3-container" style="margin-top:80px" id="showcase">
-                            <h1 class="w3-jumbo"><b>Distribuidor GJG</b></h1>
-                            <h1 class="w3-xxxlarge w3-text-red"><b>Rastrea tu paquete.</b></h1>
-                            <hr style="width:50px;border:5px solid red" class="w3-round">
-                                                         
-                        </div>
+                        {% if current_user is defined or admin is defined %}
+                        
+                            <div class="w3-container" style="margin-top:80px" id="showcase">
+                                <h1 class="w3-jumbo"><b>Distribuidor GJG</b></h1>
+                                <h1 class="w3-xxxlarge w3-text-red"><b>Rastrea tu paquete.</b></h1>
+                                <hr style="width:50px;border:5px solid red" class="w3-round">                                                             
+                            </div>
+
+                        {% else %}
+
+                            <div class="w3-container" style="margin-top:80px" id="showcase">
+                                <h1 class="w3-jumbo"><b>Distribuidor GJG</b></h1>
+                                <h1 class="w3-xxxlarge w3-text-red"><b>¡Bienvenido!</b></h1>
+                                <hr style="width:50px;border:5px solid red" class="w3-round">                                                             
+                            </div>
+
+                        {% endif %}
 
                     </div>
 
                     <div class="col-md-3">
 
-                        <img style="margin-top:80px" width="180" height="180" src="{{ url_for('static', filename='imagenes/logo.png') }}"">
+                        <img style="margin-top:80px" width="180" height="180" src="{{ url_for('static', filename='imagenes/logo.png') }}">
 
                     </div>
 
@@ -52,6 +63,9 @@
                 {% if error is defined %}
                     <p style="color:red;">{{error}}</p>
                 {% endif %}
+
+                {% if current_user is defined or admin is defined %}
+
                 <p>Introduce el tracking de tu paquete:</p>   
 
                 <div class="input-group ">
@@ -60,6 +74,16 @@
                         <button type="button" id="buscar_track" class="btn btn-primary" style="display: inline;">Buscar</button>
                    </span>
                 </div>
+
+                {% else %}
+
+                    <p style="text-align: justify;">&nbsp;&nbsp;&nbsp;&nbsp;Somos una empresa dedicada a la distribución de productos y materiales para uso masivo en todos los canales como mayoristas y al detalle. Contamos con marcas propias ofreciendo distribución exclusiva de los productos de más alta calidad provenientes de toda Venezuela.
+                    </p>
+
+                    <img style="display: block; margin: 0 auto;" src="{{ url_for('static', filename='imagenes/distribuidor.gif') }}">
+
+                {% endif %}
+
             </div> 
         </div>
 
