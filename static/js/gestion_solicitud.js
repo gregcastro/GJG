@@ -78,10 +78,15 @@ $(document).ready(function(){
               var N = solicitudes.length;
 
               for (var i = 0; i < N; i++) {
+
+                var date = new Date(solicitudes[i][4]);
+                var fechaCompra = date.getDate() + '/' + (date.getMonth() + 1) + '/' +  date.getFullYear();
+                date = new Date(solicitudes[i][5]);
+                var fechaEstimada = date.getDate() + '/' + (date.getMonth() + 1) + '/' +  date.getFullYear();
                 $('#tab_logic').append('<tr id="addr'+ i +'" onclick="editarSolicitud( '+solicitudes[i][0]+' )" style="cursor:pointer"></tr>');
                 $('#addr'+i).html("<td>" + solicitudes[i][0] +"</td> "+
                   "<td> "+ solicitudes[i][1] +" </td><td> "+ solicitudes[i][2] +" </td><td> "+ solicitudes[i][3] +" </td>" +
-                  "<td> "+ solicitudes[i][4] +" </td><td> "+ solicitudes[i][5] +" </td><td> "+ solicitudes[i][6] +" </td><td> "+ solicitudes[i][7] +"</td>");
+                  "<td> "+ fechaCompra +" </td><td> "+ fechaEstimada +" </td><td> "+ solicitudes[i][6] +" </td><td> "+ solicitudes[i][7] +"</td>");
               }
               
           }
