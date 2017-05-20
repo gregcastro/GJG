@@ -41,8 +41,12 @@ $(document).ready(function(){
       alert("Los campos de fecha son requeridos");
     } else {
       $("#tab_logic tbody > tr").remove()
-      var desde = new Date( $('#fecha1').val() );
-      var hasta = new Date( $('#fecha2').val() );
+      var datearray = $('#fecha1').val().split("/");
+      var newdate = datearray[1] + '/' + datearray[0] + '/' + datearray[2];
+      var desde = new Date(newdate);
+      datearray = $('#fecha2').val().split("/");
+      newdate = datearray[1] + '/' + datearray[0] + '/' + datearray[2];
+      var hasta = new Date(newdate);
       console.log("fecha 1 = " + desde );
       console.log("fecha 2 = " + hasta );
 
