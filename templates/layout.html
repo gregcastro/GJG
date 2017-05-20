@@ -10,6 +10,18 @@
       <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
       <link rel="stylesheet" href="{{ url_for('static', filename='css/simple-sidebar.css') }}">
 
+      <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins">
+
+      <style>
+        body,h1,h2,h3,h4,h5 {
+          font-family: "Poppins", sans-serif
+        }
+        #titleSideBar {
+           text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+        }
+      </style>
+
       <script src="{{ url_for('static', filename='js/jquery.js') }}"></script>
       <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
       
@@ -19,76 +31,48 @@
       
       
       <title>{% block title %} GJG C.A {% endblock %}</title>
-    <style>
-      body {
-        background-color: #F1FEFA;
-        /*background: url(/static/imagenes/fondo.jpg);
-        background-position: center center;
-        background-repeat: no-repeat;
-        background-attachment: fixed;
-        background-size: cover;
-        background-color: #464646;
-        font-family: 'Roboto', sans-serif;
-        color: #gray;*/
-      }
-    </style>
     {% endblock %}
   </head>
   <body>
 
     <div id="wrapper">
-      <!-- Sidebar -->
-      <div id="sidebar-wrapper">
-          <ul class="sidebar-nav">
-              <li class="sidebar-brand">
-                  <a href="/">
-                      GJG
-                  </a>
-              </li>
 
-              {% if current_user is not defined and admin is not defined %}
-                <li>
-                    <a href="/signup">Registrarse</a>
-                </li>
-                
-                <li>
-                    <a href="#" data-toggle="modal" data-target="#LoginModal">Iniciar Sesión</a>
-                </li>
-
-                <li>
-                    <a href="#" data-toggle="modal" data-target="#LoginAdminModal">Administrador</a>
-                </li>
-              {% else %}
-                <li>
-                    <a href="/cerrar_sesion">Cerrar Sesión</a>
-                </li>
-                {% if admin is not defined %}
-                <!-- aqui voy a la gestion de usuario normal -->
-                  <li>
-                      <a href="/gestion-solicitud-cliente">Gestión de Solicitudes</a>
-                  </li>
-                {% else %}
-                <!-- aqui voy a la gestion de administrador -->
-                  <li>
-                      <a href="/gestion-solicitud-admin">Gestión de Solicitudes</a>
-                  </li>
-
-                  <li>
-                      <a href="/reportes">Reportes</a>
-                  </li>
-                {% endif %}
-                
-              {% endif %}
-          </ul>
-      </div>
-      <!-- /#sidebar-wrapper -->
-
-
-    {% block content %}{% endblock %}
+      {% block content %}{% endblock %}
 
     </div>
-   <!-- /#wrapper -->
+    <!-- /#wrapper -->
 
+    <!-- Sidebar naranja -->
+    <nav class="w3-sidebar w3-red w3-collapse w3-top w3-large w3-padding" style="z-index:3;width:300px;font-weight:bold;" id="menuSidebar"><br>
+      <div class="w3-container">
+        <a href="/"><h3 id="titleSideBar" class="w3-padding-64" style="color:white;"><b>Distribuidor GJG</b></h3></a>
+      </div>
+      <div class="w3-bar-block">
+        {% if current_user is not defined and admin is not defined %}
+
+            <a href="/signup" class="w3-bar-item w3-button w3-hover-white" style="color:white;">Registrarse</a>           
+            <a href="#" data-toggle="modal" class="w3-bar-item w3-button w3-hover-white" data-target="#LoginModal" style="color:white; ">Iniciar Sesión</a>
+            <a href="#" data-toggle="modal" class="w3-bar-item w3-button w3-hover-white" data-target="#LoginAdminModal" style="color:white;">Administrador</a>
+
+        {% else %}
+          
+            <a href="/cerrar_sesion" class="w3-bar-item w3-button w3-hover-white" style="color:white;">Cerrar Sesión</a>
+          
+          {% if admin is not defined %}
+          <!-- aqui voy a la gestion de usuario normal -->
+              <a href="/gestion-solicitud-cliente" class="w3-bar-item w3-button w3-hover-white" style="color:white;">Gestión de Solicitudes</a>
+          {% else %}
+          <!-- aqui voy a la gestion de administrador -->
+            
+              <a href="/gestion-solicitud-admin" class="w3-bar-item w3-button w3-hover-white" style="color:white;">Gestión de Solicitudes</a>
+              <a href="/reportes" class="w3-bar-item w3-button w3-hover-white" style="color:white;">Reportes</a>
+
+          {% endif %}
+          
+        {% endif %}        
+      </div>
+    </nav>
+    <!-- Fin Sidebar naranja -->
 
     <!-- modal LOGIN -->
     <div class="modal fade" id="LoginModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -113,7 +97,7 @@
                     <input type="password" class="form-control" id="login_pwd" placeholder="Contraseña" name="password" required="">
                   </div>
                   <div class="text-aling-right">
-                    <button type="submit" class="btn btn-info">Entrar</button>
+                    <button type="submit" class="btn btn-primary">Entrar</button>
                   </div>
                 </form>
               </div>
@@ -146,7 +130,7 @@
                     <input type="password" class="form-control" id="login_pwd_admin" placeholder="Contraseña" name="password" required="">
                   </div>
                   <div class="text-aling-right">
-                    <button type="submit" class="btn btn-info">Entrar</button>
+                    <button type="submit" class="btn btn-primary">Entrar</button>
                   </div>
                 </form>
               </div>
