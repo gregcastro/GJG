@@ -92,10 +92,24 @@
         </div> <!-- end row -->
 
         <div class="row">
-        <h1>Actualizado es: {{actualizado}}</h1>
     			{% if actualizado is defined %} 
     				<script>
     					$(document).ready(function(){
+                $("#dialog_actualizacion").dialog({
+                  autoOpen : false,
+                  modal : true,
+                  show : "blind",
+                  hide : "blind",
+                  my: "center",
+                  at: "center",
+                  of: window,
+                  buttons: {
+                    "Aceptar": function () {
+                      $(this).dialog("close");
+                    }
+                  }  
+                });
+                
     						$("#dialog_actualizacion").dialog("open");
                 
     					});
@@ -192,7 +206,7 @@
 <script type="text/javascript">
     $(function () {
 
-    	$("#dialog, #dialog_actualizacion").dialog({
+    	$("#dialog").dialog({
           autoOpen : false,
           modal : true,
           show : "blind",
