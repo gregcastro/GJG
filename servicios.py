@@ -192,8 +192,10 @@ def consultar_tarifa():
 #===== Cliente Común =====#
 @app.route('/gestion-solicitud-cliente')
 def gestionar_solicitud_cliente():
-	return render_template("index.html")
+	if(session.get('logged_in')):
+		return render_template("index.html", current_user=session.get('logged_in'))
 
+	return render_template("index.html")
 #===== Fin Cliente Común =====#
 
 
