@@ -85,6 +85,10 @@ headers = {'content-type': 'application/json'}
 # Que los PDFs de vean bonitos
 
 
+# Colocar cuando es entregado en "locacion"-> Entregado
+# No permitir que se pueda cambiar el estado unavez que ha sido entregado, solo sera un modal readonly
+
+
 #=========== POR HACER =============#
 
 
@@ -219,7 +223,7 @@ def rastrear_tracking():
 		return '{}'.format(data)
 
 	elif (session.get('logged_in')):
-
+		print('estoy e logged_in')
 		cursor.execute("SELECT idEncargo FROM encargo WHERE tracking=%s ", tracking )
 		idEncargo = cursor.fetchone()
 		idEncargo = idEncargo[0]
@@ -318,21 +322,24 @@ def editar_solicitud():
 		con = mysql.connect()
 		cursor = con.cursor()
 
+		# Busco el idEncargo perteneciente al encargo que se esta editando
+		cursor.execute("SELECT idEncargo FROM encargo WHERE tracking=%s ", tracking )
+		idEncargo = cursor.fetchone()
+		idEncargo = idEncargo[0]
+
 		# Si el estatus no es ENTREGADO entonces realizo una insercion en el historial de donde se encuentra el paquete
-		if idEstado != 4:
+		if idEstado != '4':
 			locacion = request.form['locacion']
-			# Busco el idEncargo perteneciente al encargo que se esta editando
-			cursor.execute("SELECT idEncargo FROM encargo WHERE tracking=%s ", tracking )
-			idEncargo = cursor.fetchone()
-			idEncargo = idEncargo[0]
 			# Inserto en historial la locacion y fecha correspondiente
 			cursor.execute("INSERT INTO historial (fecha, locacion, idEncargo) VALUES(%s,%s,%s)", (fecha, locacion, idEncargo) )
 		
+
+		cursor.execute("INSERT INTO historial (fecha, locacion, idEncargo) VALUES(%s,%s,%s)", (fecha, "Producto Entregado", idEncargo) )
 		# Se actualiza el estado del encargo
 		cursor.execute("UPDATE encargo SET idEstatus = %s WHERE tracking = %s ", (idEstado, tracking) )
 		con.commit()
 
-		return render_template("gestion_solicitud.html", actualizado='Actualización de solicitud exitosa', admin=session.get('logged_in') )
+		return render_template("gestion_solicitud.html", actualizado=1, admin=session.get('logged_in') )
 	return render_template("index.html")
 
 

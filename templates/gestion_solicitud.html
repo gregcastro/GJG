@@ -92,46 +92,38 @@
         </div> <!-- end row -->
 
         <div class="row">
-			{% if actualizado is defined %} 
-				<script>
-					$(document).ready(function(){
-						alert( 'Actualización Exitosa!' );
-					});
+        <h1>Actualizado es: {{actualizado}}</h1>
+    			{% if actualizado is defined %} 
+    				<script>
+    					$(document).ready(function(){
+    						$("#dialog_actualizacion").dialog("open");
+                
+    					});
+    				</script>
+            {% set actualizado = 0 %} 
+    			{% endif %}
+    			<div class="col-md-9">
+    				<table class="table table-bordered table-hover" id='tab_logic'>
+    				    <thead>
+    				      <tr class="danger">
+    				        <th># Orden</th>
+    				        <th>Enviado a</th>
+    				        <th>Comercio</th>
+    				        <th>Costo</th>
+    				        <th>Fecha de Compra</th>
+    				        <th>Fecha Estimada</th>
+    				        <th>Estatus</th>
+    				        <th>Dirección</th>
+    				      </tr>
+    				    </thead>
+    				    <tbody>
 
-				</script>
-
-			{% endif %}
-			<div class="col-md-9">
-				<table class="table table-bordered table-hover" id='tab_logic'>
-				    <thead>
-				      <tr class="danger">
-				        <th># Orden</th>
-				        <th>Enviado a</th>
-				        <th>Comercio</th>
-				        <th>Costo</th>
-				        <th>Fecha de Compra</th>
-				        <th>Fecha Estimada</th>
-				        <th>Estatus</th>
-				        <th>Dirección</th>
-				      </tr>
-				    </thead>
-				    <tbody>
-
-				    </tbody>
-				  </table>
-			</div>
+    				    </tbody>
+    				  </table>
+    			</div>
 
 
 		</div> <!-- end row -->
-
-
-
-
-
-
-
-
-
 
     </div>
 </div>
@@ -163,7 +155,7 @@
 
             	<div class="form-group">
           			<label for="locacion" id="locacion_label">Locación</label>
-          			<input type="text" class="form-control" id="locacion" name="locacion" required="true">
+          			<input type="text" class="form-control" id="locacion" name="locacion">
             	</div>
 
           		<div class="form-group">
@@ -177,7 +169,7 @@
 				</div>
 
               <div class="text-aling-center">
-                <button type="submit" class="btn btn-primary">Aceptar</button>
+                <button id="boton_editar" type="submit" class="btn btn-primary">Aceptar</button>
               </div>
             </form>
           </div>
@@ -187,8 +179,12 @@
   </div>
 
   	<div id="dialog" title="¡Atención!">
-		<p>Los campos de fecha son requeridos.</p>
-	</div>
+  		<p>Los campos de fecha son requeridos.</p>
+  	</div>
+
+    <div id="dialog_actualizacion" title="¡Acción Completada!">
+      <p>Actualización Exitosa.</p>
+    </div>
 
 </div>
 
@@ -196,7 +192,7 @@
 <script type="text/javascript">
     $(function () {
 
-    	$("#dialog").dialog({
+    	$("#dialog, #dialog_actualizacion").dialog({
           autoOpen : false,
           modal : true,
           show : "blind",
@@ -210,6 +206,8 @@
             }
           }  
         });
+
+
 
     	$("#calendar1").click(function() {
           $("#fecha1").focus();

@@ -1,24 +1,5 @@
 $(document).ready(function(){
     
-  // items = ['POR PROCESAR', 'PROCESADO', 'EN RUTA', 'ENTREGADO'];
-
-  // $('#sel').append($('<option>', {
-  //   value: 1 ,
-  //   text: items[0]
-  // }));
-  // $('#sel').append($('<option>', {
-  //   value: 2 ,
-  //   text: items[1]
-  // }));
-  // $('#sel').append($('<option>', {
-  //   value: 3 ,
-  //   text: items[2]
-  // }));
-  // $('#sel').append($('<option>', {
-  //   value: 4 ,
-  //   text: items[3]
-  // }));
-
   // Cuando el paquete se quiere colocar como ENTREGADO entonces el campo "Locacion" debe desaparecer
   $('#sel').change(function() {
 
@@ -133,6 +114,22 @@ function editarSolicitud(tracking) {
         {    
             
             $("#sel").val(data);
+
+            if (data == '4') {
+              $('#locacion').hide();
+              $('#locacion_label').hide();
+              $('#boton_editar').hide();
+              $("#sel").prop('disabled', true);
+            } else {
+              $('#locacion').show();
+              $('#locacion_label').show();
+              $('#boton_editar').show();
+              $('#locacion').val('');
+              $("#sel").prop('disabled', false);
+
+
+
+            }
             
         }
     });
