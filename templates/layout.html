@@ -51,22 +51,24 @@
       <div class="w3-bar-block">
         {% if current_user is not defined and admin is not defined %}
 
-            <a href="/signup" class="w3-bar-item w3-button w3-hover-white" style="color:white;">Registrarse <span class="glyphicon glyphicon-check" aria-hidden="true"></span></a>           
-            <a href="#" data-toggle="modal" class="w3-bar-item w3-button w3-hover-white" data-target="#LoginModal" style="color:white; ">Iniciar Sesión <span class="glyphicon glyphicon-log-in" aria-hidden="true"></span></a>
-            <a href="#" data-toggle="modal" class="w3-bar-item w3-button w3-hover-white" data-target="#LoginAdminModal" style="color:white;">Administrador <span class="glyphicon glyphicon-user" aria-hidden="true"></span></a>
+            <a href="/signup" class="w3-bar-item w3-button w3-hover-white" style="color:white;"><span class="glyphicon glyphicon-check" aria-hidden="true"></span> &nbsp;Registrarse </a>    
+
+            <a href="#" data-toggle="modal" class="w3-bar-item w3-button w3-hover-white" data-target="#LoginModal" style="color:white; "><span class="glyphicon glyphicon-log-in" aria-hidden="true"></span> &nbsp;Iniciar Sesión </a>
+
+            <a href="#" data-toggle="modal" class="w3-bar-item w3-button w3-hover-white" data-target="#LoginAdminModal" style="color:white;"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> &nbsp;Administrador </a>
 
         {% else %}
           
-            <a href="/cerrar_sesion" class="w3-bar-item w3-button w3-hover-white" style="color:white;">Cerrar Sesión <span class="glyphicon glyphicon-log-out" aria-hidden="true"></span></a>
+            <a href="/cerrar_sesion" class="w3-bar-item w3-button w3-hover-white" style="color:white;"><span class="glyphicon glyphicon-log-out" aria-hidden="true"></span> &nbsp;Cerrar Sesión </a>
           
           {% if admin is not defined %}
           <!-- aqui voy a la gestion de usuario normal -->
-              <a href="/gestion-solicitud-cliente" class="w3-bar-item w3-button w3-hover-white" style="color:white;">Gestión de Solicitudes <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span></a>
+              <a href="/gestion-solicitud-cliente" class="w3-bar-item w3-button w3-hover-white" style="color:white;"><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span> &nbsp;Gestión de Solicitudes </a>
           {% else %}
           <!-- aqui voy a la gestion de administrador -->
             
-              <a href="/gestion-solicitud-admin" class="w3-bar-item w3-button w3-hover-white" style="color:white;">Gestión de Solicitudes <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span></a>
-              <a href="/reportes" class="w3-bar-item w3-button w3-hover-white" style="color:white;">Reportes <span class="glyphicon glyphicon-duplicate" aria-hidden="true"></span></a>
+              <a href="/gestion-solicitud-admin" class="w3-bar-item w3-button w3-hover-white" style="color:white;"><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span> &nbsp;Gestión de Solicitudes </a>
+              <a href="/reportes" class="w3-bar-item w3-button w3-hover-white" style="color:white;"><span class="glyphicon glyphicon-duplicate" aria-hidden="true"></span> &nbsp;Reportes </a>
 
           {% endif %}
           
