@@ -82,6 +82,8 @@ headers = {'content-type': 'application/json'}
 
 # HOSTING
 
+# Comunicacion grupos
+
 #=========== POR HACER =============#
 
 
@@ -106,6 +108,10 @@ def index():
 		if response['status'] == 200:
 
 			session['logged_in'] = response['access_token']
+			con = mysql.connect()
+			cursor = con.cursor()
+			cursor.execute("INSERT INTO auditoria (fecha, usuario, descripcion) VALUES(%s,%s,%s)", (date.today(), request.form['correo'], 'Nuevo inicio de sesión') )
+			con.commit()
 			return render_template("index.html", current_user=response['access_token'])
 
 		return render_template("index.html", error=response['error'])
@@ -125,6 +131,8 @@ def login_admin():
 		return render_template("index.html", error=errors['ErrorLogin']['error'])
 	else:
 		session['logged_in'] = 'admin'
+		cursor.execute("INSERT INTO auditoria (fecha, usuario, descripcion) VALUES(%s,%s,%s)", (date.today(), request.form['correo'], 'Nuevo inicio de sesión') )
+		con.commit()
 		return render_template("index.html", admin=request.form['correo'])
 	
 
@@ -161,6 +169,10 @@ def registro():
 				if 'message' not in response:
 					return render_template("registro.html", error=response['error'])
 
+				con = mysql.connect()
+				cursor = con.cursor()
+				cursor.execute("INSERT INTO auditoria (fecha, usuario, descripcion) VALUES(%s,%s,%s)", (date.today(), request.form['correo'], 'Nuevo Registro de Usuario') )
+				con.commit()
 				return render_template("registro.html", registrado=response['message'])
 			else:
 				return render_template("registro.html", error='Las contraseñas no coinciden')
@@ -226,10 +238,14 @@ def get_solicitudes():
 			cursor.execute("SELECT * FROM view_solicitudes WHERE fechaCompra BETWEEN %s AND %s AND idCliente=%s", (desde, hasta, idCliente) )
 		else:
 			cursor.execute("SELECT * FROM view_solicitudes WHERE estatus=%s AND fechaCompra BETWEEN %s AND %s AND idCliente=%s", (estatus, desde, hasta, idCliente) )
-		
+
 		solicitudes = cursor.fetchall()
 		print(solicitudes)
 		data = json.dumps(solicitudes)
+
+		descripcion = 'Realizó una búsqueda de solicitudes entre ' + desde + ' y ' + hasta
+		cursor.execute("INSERT INTO auditoria (fecha, usuario, descripcion) VALUES(%s,%s,%s)", (date.today(), decod['sub'], descripcion) )
+		con.commit()
 
 		return '{}'.format(data)
 	return render_template("index.html")
@@ -252,6 +268,10 @@ def rastrear_tracking():
 		encargo = cursor.fetchall()
 
 		data = json.dumps(encargo)
+
+		descripcion = 'Rastreó el número de orden ' + tracking
+		cursor.execute("INSERT INTO auditoria (fecha, usuario, descripcion) VALUES(%s,%s,%s)", (date.today(), 'Administrador', descripcion) )
+		con.commit()
 
 		return '{}'.format(data)
 
@@ -279,6 +299,10 @@ def rastrear_tracking():
 		print(historial)
 
 		data = json.dumps(historial)
+
+		descripcion = 'Rastreó el número de orden ' + tracking
+		cursor.execute("INSERT INTO auditoria (fecha, usuario, descripcion) VALUES(%s,%s,%s)", (date.today(), decod['sub'], descripcion) )
+		con.commit()
 
 		return '{}'.format(data)
 
@@ -323,6 +347,10 @@ def get_solicitudes_admin():
 		print(solicitudes)
 		data = json.dumps(solicitudes)
 
+		descripcion = 'Realizó una búsqueda de solicitudes entre ' + desde + ' y ' + hasta
+		cursor.execute("INSERT INTO auditoria (fecha, usuario, descripcion) VALUES(%s,%s,%s)", (date.today(), 'Administrador', descripcion) )
+		con.commit()
+
 		return '{}'.format(data)
 	return render_template("index.html")
 
@@ -350,6 +378,7 @@ def get_logs_admin():
 
 		return '{}'.format(data)
 	return render_template("index.html")
+
 
 @app.route('/estatusEncargo')
 def get_estatus_encargo():
@@ -393,13 +422,20 @@ def editar_solicitud():
 			locacion = request.form['locacion']
 			# Inserto en historial la locacion y fecha correspondiente
 			cursor.execute("INSERT INTO historial (fecha, locacion, idEncargo) VALUES(%s,%s,%s)", (fecha, locacion, idEncargo) )
+			descripcion = 'Actualizó la solicitud con el número de orden ' + tracking + ' con el estatus ' + idEstado + ' en la locación ' + locacion
 		
 		if idEstado == '4':
 			cursor.execute("INSERT INTO historial (fecha, locacion, idEncargo) VALUES(%s,%s,%s)", (fecha, "Producto Entregado", idEncargo) )
+			descripcion = 'Se entregó la solicitud con el número de orden ' + tracking
 		
 		# Se actualiza el estado del encargo
 		cursor.execute("UPDATE encargo SET idEstatus = %s WHERE tracking = %s ", (idEstado, tracking) )
+		
+		cursor.execute("INSERT INTO auditoria (fecha, usuario, descripcion) VALUES(%s,%s,%s)", (date.today(), 'Administrador', descripcion) )
+
 		con.commit()
+
+
 
 		return redirect(url_for('gestionar_solicitud_admin', actualizado=1) )
 		# return render_template("gestion_solicitud.html", actualizado=1, admin=session.get('logged_in') )
@@ -683,6 +719,9 @@ def pdf_generate():
 		pdf = pdfkit.from_string(body, False)
 
 
+	descripcion = 'Se generó un PDF para las solicitudes de ' + solicitud 
+	cursor.execute("INSERT INTO auditoria (fecha, usuario, descripcion) VALUES(%s,%s,%s)", (date.today(), 'Administrador', descripcion) )
+	con.commit()
 
 
 	response = make_response(pdf)
@@ -913,6 +952,9 @@ class solicitarDistribucion(Resource):
 			cursor.execute("INSERT INTO factura (fechaVencimiento, monto, idCliente, idEstadoFactura, idEncargo)" + 
 						   "VALUES (%s,%s,%s,%s,%s)", (fechaVencimientoFactura, costo, idCliente, 1, con.insert_id()) )
 
+
+			descripcion = 'Se solicitó un servicio de distribución con los siguientes datos: cédula: ' + data['cedula'] + ' nombre: ' + data['nombre'] + ' teléfono: ' + data['telefono'] + ' correo: ' + data['correo'] + ' peso: ' + str(data['peso']) + ' costo: ' + str(costo) +' número de orden: ' + tracking
+			cursor.execute("INSERT INTO auditoria (fecha, usuario, descripcion) VALUES(%s,%s,%s)", (date.today(), decod['sub'], descripcion) )
 
 			con.commit()
 
