@@ -74,8 +74,6 @@ headers = {'content-type': 'application/json'}
 
 #=========== POR HACER =============#
 
-# Logs del sistema
-
 # WB consultarTarifa()
 
 # API REST
@@ -370,7 +368,7 @@ def get_logs_admin():
 
 		con = mysql.connect()
 		cursor = con.cursor()
-		cursor.execute("SELECT * FROM view_logs WHERE fecha BETWEEN %s AND %s ", (desde, hasta) )		
+		cursor.execute("SELECT * FROM auditoria WHERE fecha BETWEEN %s AND %s ", (desde, hasta) )		
 		
 		logs = cursor.fetchall()
 		print(logs)
@@ -452,6 +450,7 @@ def generar_reporte():
 @app.route('/pdf_generate', methods=['POST'])
 def pdf_generate():
 	solicitud = request.form['solicitud']
+	real_solicitud = request.form['solicitud']
 	fecha1 = request.form['desde']
 	fecha2 = request.form['hasta']
 
@@ -719,7 +718,7 @@ def pdf_generate():
 		pdf = pdfkit.from_string(body, False)
 
 
-	descripcion = 'Se generó un PDF para las solicitudes de ' + solicitud 
+	descripcion = 'Se generó un PDF para las solicitudes de ' + real_solicitud
 	cursor.execute("INSERT INTO auditoria (fecha, usuario, descripcion) VALUES(%s,%s,%s)", (date.today(), 'Administrador', descripcion) )
 	con.commit()
 

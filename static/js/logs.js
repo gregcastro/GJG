@@ -42,11 +42,11 @@ $(document).ready(function(){
 
               for (var i = 0; i < N; i++) {
 
-                var date = new Date(logs[i][3]);
+                var date = new Date(logs[i][2]);
                 var fecha = date.getDate() + '/' + (date.getMonth() + 1) + '/' +  date.getFullYear();
                 $('#tab_logic').append('<tr id="addr'+ i +'"></tr>');
                 $('#addr'+i).html("<td>" + fecha +"</td> "+
-                  "<td> "+ logs[i][0] +" </td><td> "+ logs[i][1] +" </td><td> "+ logs[i][2] +"</td>");
+                  "<td> "+ logs[i][3] +" </td><td> "+ logs[i][1] +" </td>");
               }
               
           }
