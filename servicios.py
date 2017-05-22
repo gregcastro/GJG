@@ -74,20 +74,13 @@ headers = {'content-type': 'application/json'}
 
 #=========== POR HACER =============#
 
-# Cuando se recarga la pagina en Reportes y por ejemplo se tiene colocado 'Dia', vuelven a aparecer los dos campos de fecha.
+# Logs del sistema
 
-# Gestion de solicitudes de un usuario comun (comercio)
+# WB consultarTarifa()
 
-# Evaluar la posibilidad de buscar por tracking en gestion de solicitud (input y boton separados)
+# API REST
 
-# Mostrar la fecha bonita en INDEX.HTML cuando se sigue el tracking como cliente 
-
-# Que los PDFs de vean bonitos
-
-
-# Colocar cuando es entregado en "locacion"-> Entregado
-# No permitir que se pueda cambiar el estado unavez que ha sido entregado, solo sera un modal readonly
-
+# HOSTING
 
 #=========== POR HACER =============#
 
@@ -191,14 +184,54 @@ def consultar_tarifa():
 
 
 
-
-
 #===== Cliente Común =====#
 @app.route('/gestion-solicitud-cliente')
 def gestionar_solicitud_cliente():
-	if(session.get('logged_in')):
-		return render_template("index.html", current_user=session.get('logged_in'))
+	if(session.get('logged_in') and session.get('logged_in')!='admin' ):
 
+		return render_template("gestion_solicitud.html", current_user=session.get('logged_in'), tipo_user='normal')
+
+	return render_template("index.html")
+
+
+@app.route('/solicitudes')
+def get_solicitudes():
+	if(session.get('logged_in') and session.get('logged_in') != 'admin'):
+
+		desde = str(request.args['desde'])
+		hasta = str(request.args['hasta'])
+		estatus = str(request.args['tipo'])
+
+		print( estatus )
+		print(desde)
+		print(hasta)
+
+		con = mysql.connect()
+		cursor = con.cursor()
+
+		# Busco el idCliente del usuario de esta sesion
+		try:
+			decod = jwt.decode(session.get('logged_in'), 'secret')
+		except jwt.InvalidTokenError:
+			return errors['ErrorAlDecodificar'], 412
+
+		print(decod['sub'])
+
+		cursor.execute("SELECT idCliente FROM cliente WHERE correo=%s", (decod['sub']))
+		idCliente = cursor.fetchone()
+		idCliente = idCliente[0]
+
+
+		if estatus == "":
+			cursor.execute("SELECT * FROM view_solicitudes WHERE fechaCompra BETWEEN %s AND %s AND idCliente=%s", (desde, hasta, idCliente) )
+		else:
+			cursor.execute("SELECT * FROM view_solicitudes WHERE estatus=%s AND fechaCompra BETWEEN %s AND %s AND idCliente=%s", (estatus, desde, hasta, idCliente) )
+		
+		solicitudes = cursor.fetchall()
+		print(solicitudes)
+		data = json.dumps(solicitudes)
+
+		return '{}'.format(data)
 	return render_template("index.html")
 #===== Fin Cliente Común =====#
 
@@ -255,14 +288,18 @@ def rastrear_tracking():
 
 @app.route('/gestion-solicitud-admin')
 def gestionar_solicitud_admin():
-	if(session.get('logged_in')):
-		return render_template("gestion_solicitud.html", admin=session.get('logged_in'))
+	if(session.get('logged_in') and session.get('logged_in')=='admin'):
+		if 'actualizado' in request.args:
+			actualizado = request.args['actualizado']
+			return render_template("gestion_solicitud.html", admin=session.get('logged_in'), actualizado=actualizado,tipo_user='admin')
+
+		return render_template("gestion_solicitud.html", admin=session.get('logged_in'), tipo_user='admin')
 	return render_template("index.html")
 
 
 @app.route('/solicitudes-admin')
 def get_solicitudes_admin():
-	if(session.get('logged_in')):
+	if(session.get('logged_in') and session.get('logged_in')=='admin'):
 
 		desde = str(request.args['desde'])
 		hasta = str(request.args['hasta'])
@@ -292,7 +329,7 @@ def get_solicitudes_admin():
 
 @app.route('/estatusEncargo')
 def get_estatus_encargo():
-	if(session.get('logged_in')):
+	if(session.get('logged_in') and session.get('logged_in')=='admin'):
 
 		tracking = request.args['tracking']
 
@@ -313,7 +350,7 @@ def get_estatus_encargo():
 @app.route('/editar-solicitud', methods=['POST'])
 def editar_solicitud():
 
-	if(session.get('logged_in')):
+	if(session.get('logged_in') and session.get('logged_in')=='admin'):
 		# Obtengo parametros del form
 		idEstado = request.form['estado']
 		tracking = int(request.form['tracking'])
@@ -333,19 +370,21 @@ def editar_solicitud():
 			# Inserto en historial la locacion y fecha correspondiente
 			cursor.execute("INSERT INTO historial (fecha, locacion, idEncargo) VALUES(%s,%s,%s)", (fecha, locacion, idEncargo) )
 		
-
-		cursor.execute("INSERT INTO historial (fecha, locacion, idEncargo) VALUES(%s,%s,%s)", (fecha, "Producto Entregado", idEncargo) )
+		if idEstado == '4':
+			cursor.execute("INSERT INTO historial (fecha, locacion, idEncargo) VALUES(%s,%s,%s)", (fecha, "Producto Entregado", idEncargo) )
+		
 		# Se actualiza el estado del encargo
 		cursor.execute("UPDATE encargo SET idEstatus = %s WHERE tracking = %s ", (idEstado, tracking) )
 		con.commit()
 
-		return render_template("gestion_solicitud.html", actualizado=1, admin=session.get('logged_in') )
+		return redirect(url_for('gestionar_solicitud_admin', actualizado=1) )
+		# return render_template("gestion_solicitud.html", actualizado=1, admin=session.get('logged_in') )
 	return render_template("index.html")
 
 
 @app.route('/reportes')
 def generar_reporte():
-	if(session.get('logged_in')):
+	if(session.get('logged_in') and session.get('logged_in')=='admin'):
 		return render_template("reportes.html", admin=session.get('logged_in'))
 	return render_template("index.html")
 
@@ -635,52 +674,8 @@ def pdf_generate():
 
 
 
-
-#No se si uso esto...
-#Funcion seleccionar que muestra la ventana luego del logueo
-@app.route('/seleccion')
-def seleccionar():
-	return selec_funct(session)
-
-#Recibe argumento variado, en caso de ser POST recibe usuario y clave, sino solo retorna los valores del template
-def index_funct(*args):
-	bad_user = None
-	if len(args) > 0:
-		# hashinput_user = hashlib.sha256(str(args[0]).encode('utf-8')).hexdigest() #Le hice encriptacion sha256
-		correo = args[0]
-		hashinput_password = hashlib.sha256(str(args[1]).encode('utf-8')).hexdigest() #Le hice encriptacion sha256
-		
-		cursor = mysql.connect().cursor()
-		
-		cursor.execute("SELECT * FROM cliente WHERE correo = %s AND clave = %s ", correo, hashinput_password)
-		data = cursor.fetchall()
-
-		if ( data == None ) :
-			bad_user = "Usuario o contraseña erróneos. Por favor, intente de nuevo.";
-		else:
-			args[2]['logged_in'] = args[0] 
-			return redirect(url_for('seleccionar'))
-	return render_template("index.html", err=bad_user)
-
-
-#Funcion que retorna la pantalla principal despues de logeo (tambien elimina la sesion)
-def selec_funct(session):
-	if session.get('logged_in'):
-		return render_template("registrar.html")
-	else:
-		return redirect(url_for('index'))
-
-
+#===== API =====#
 codPostalOrigen = 1060;
-# Cuando registran un cliente colocan el codigo postal donde se encuentra...
-# hacer dos consultar tarifa, si estas registrado mandas el idCliente (rif) , en el caso de no estar registrado mandas codPostal origen y destino
-# El consultarTarifa no se manda token, pero se manda idCliente
-# solicitarDistribucion ajuro tiene q estar registrado y se envia el token de sesion
-# Tomar en cuenta que el paquete se envia desde el comercio..
-
-
-
-
 
 class Register(Resource):
 	#FALTA
@@ -906,41 +901,11 @@ class solicitarDistribucion(Resource):
 	
 
 
-class actualizarEstadoSolicitud(Resource):
-	def put(self):
-
-		data = request.get_json()
-
-		if ('estatus' not in data) or ('idEncargo' not in data):
-			return errors['ErrorPeticion'], 400
-
-		#Comprobar que el idEncargo existe y el estatus es valido, es decir.. que exista y que sea mayor al anterior
-		con = mysql.connect()
-		cursor = con.cursor()
-
-		cursor.execute("SELECT * FROM encargo WHERE idEncargo = %s", (data['idEncargo']))
-		encargo = cursor.fetchall()
-		if (encargo == None):
-			return "No existe este encargo"
-
-		cursor.execute("SELECT * FROM estatusencargo WHERE idEstatus = %s", (data['estatus']))
-		estatus = cursor.fetchall()
-		if (estatus == None):
-			return "No existe este estatus"
-	
-
-		cursor.execute("UPDATE encargo SET idEstatus = %s WHERE idEncargo = %s", (data['estatus'], data['idEncargo']) )
-		con.commit()
-
-		return "Estatus cambiado exitosamente (cambiar esto)"
-
-
 
 api.add_resource(Register, '/registro')
 api.add_resource(Login, '/login')
 api.add_resource(consultarTarifa, '/consultarTarifa/<string:codPostal>/<float:peso>')
 api.add_resource(solicitarDistribucion, '/solicitarDistribucion')
-api.add_resource(actualizarEstadoSolicitud, '/estado-solicitud')
 
 
 # @app.route('/pdf')

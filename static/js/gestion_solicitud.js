@@ -41,37 +41,72 @@ $(document).ready(function(){
       valor_select = $('#sel_solicitudes').val();
       console.log(valor_select);
 
+
+      if ($('#tipo_user').val() == 'admin') {
+        $.ajax
+        ({
+            type:"GET" ,
+            url: '/solicitudes-admin?desde='+desde+'&hasta='+hasta+'&tipo='+valor_select,
+            dataType: "text",
+            error: function (xhr, ajaxOptions, thrownError)
+            {
+                console.log(xhr.status); console.log(thrownError); console.log(ajaxOptions);
+            },
+            success: function(data)
+            {    
+                console.log(data);
+                solicitudes = jQuery.parseJSON(data);
+                console.log(solicitudes);
+                var N = solicitudes.length;
+
+                for (var i = 0; i < N; i++) {
+
+                  var date = new Date(solicitudes[i][4]);
+                  var fechaCompra = date.getDate() + '/' + (date.getMonth() + 1) + '/' +  date.getFullYear();
+                  date = new Date(solicitudes[i][5]);
+                  var fechaEstimada = date.getDate() + '/' + (date.getMonth() + 1) + '/' +  date.getFullYear();
+                  $('#tab_logic').append('<tr id="addr'+ i +'" onclick="editarSolicitud( '+solicitudes[i][0]+' )" style="cursor:pointer"></tr>');
+                  $('#addr'+i).html("<td>" + solicitudes[i][0] +"</td> "+
+                    "<td> "+ solicitudes[i][1] +" </td><td> "+ solicitudes[i][2] +" </td><td> "+ solicitudes[i][3].toFixed(2) +" </td>" +
+                    "<td> "+ fechaCompra +" </td><td> "+ fechaEstimada +" </td><td> "+ solicitudes[i][6] +" </td><td> "+ solicitudes[i][7] +"</td>");
+                }
+                
+            }
+        });
+      } else {
+        $.ajax
+        ({
+            type:"GET" ,
+            url: '/solicitudes?desde='+desde+'&hasta='+hasta+'&tipo='+valor_select,
+            dataType: "text",
+            error: function (xhr, ajaxOptions, thrownError)
+            {
+                console.log(xhr.status); console.log(thrownError); console.log(ajaxOptions);
+            },
+            success: function(data)
+            {    
+                console.log(data);
+                solicitudes = jQuery.parseJSON(data);
+                console.log(solicitudes);
+                var N = solicitudes.length;
+
+                for (var i = 0; i < N; i++) {
+
+                  var date = new Date(solicitudes[i][4]);
+                  var fechaCompra = date.getDate() + '/' + (date.getMonth() + 1) + '/' +  date.getFullYear();
+                  date = new Date(solicitudes[i][5]);
+                  var fechaEstimada = date.getDate() + '/' + (date.getMonth() + 1) + '/' +  date.getFullYear();
+                  $('#tab_logic').append('<tr id="addr'+ i +'"</tr>');
+                  $('#addr'+i).html("<td>" + solicitudes[i][0] +"</td> "+
+                    "<td> "+ solicitudes[i][1] +" </td><td> "+ solicitudes[i][2] +" </td><td> "+ solicitudes[i][3].toFixed(2) +" </td>" +
+                    "<td> "+ fechaCompra +" </td><td> "+ fechaEstimada +" </td><td> "+ solicitudes[i][6] +" </td><td> "+ solicitudes[i][7] +"</td>");
+                }
+                
+            }
+        });
+      }
       
-      $.ajax
-      ({
-          type:"GET" ,
-          url: '/solicitudes-admin?desde='+desde+'&hasta='+hasta+'&tipo='+valor_select,
-          dataType: "text",
-          error: function (xhr, ajaxOptions, thrownError)
-          {
-              console.log(xhr.status); console.log(thrownError); console.log(ajaxOptions);
-          },
-          success: function(data)
-          {    
-              console.log(data);
-              solicitudes = jQuery.parseJSON(data);
-              console.log(solicitudes);
-              var N = solicitudes.length;
-
-              for (var i = 0; i < N; i++) {
-
-                var date = new Date(solicitudes[i][4]);
-                var fechaCompra = date.getDate() + '/' + (date.getMonth() + 1) + '/' +  date.getFullYear();
-                date = new Date(solicitudes[i][5]);
-                var fechaEstimada = date.getDate() + '/' + (date.getMonth() + 1) + '/' +  date.getFullYear();
-                $('#tab_logic').append('<tr id="addr'+ i +'" onclick="editarSolicitud( '+solicitudes[i][0]+' )" style="cursor:pointer"></tr>');
-                $('#addr'+i).html("<td>" + solicitudes[i][0] +"</td> "+
-                  "<td> "+ solicitudes[i][1] +" </td><td> "+ solicitudes[i][2] +" </td><td> "+ solicitudes[i][3] +" </td>" +
-                  "<td> "+ fechaCompra +" </td><td> "+ fechaEstimada +" </td><td> "+ solicitudes[i][6] +" </td><td> "+ solicitudes[i][7] +"</td>");
-              }
-              
-          }
-      });
+        
     }
 
       
