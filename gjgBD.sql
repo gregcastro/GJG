@@ -35,12 +35,18 @@ INSERT INTO `administrador` (`id`, `usuario`, `correo`, `clave`) VALUES
 CREATE TABLE IF NOT EXISTS `auditoria` (
   `idAuditoria` int(11) NOT NULL AUTO_INCREMENT,
   `descripcion` varchar(255) NOT NULL,
-  `fecha` datetime NOT NULL,
+  `fecha` date NOT NULL,
+  `usuario` varchar(50) NOT NULL,
   PRIMARY KEY (`idAuditoria`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
 
 -- Volcando datos para la tabla gjg.auditoria: ~0 rows (aproximadamente)
 /*!40000 ALTER TABLE `auditoria` DISABLE KEYS */;
+INSERT INTO `auditoria` (`idAuditoria`, `descripcion`, `fecha`, `usuario`) VALUES
+	(2, 'Nuevo inicio de sesión', '2017-05-22', 'josegregorio994@gmail.com'),
+	(3, 'Nuevo inicio de sesión', '2017-05-22', 'hsitechnologies@gmail.com'),
+	(4, 'Realizó una búsqueda de solicitudes entre 2017/5/2 y 2017/5/19', '2017-05-22', 'hsitechnologies@gmail.com'),
+	(5, 'Se solicitó un servicio de distribución con los siguientes datos: cédula: 6784585 nombre: Bernardo Fuentes teléfono: 04147856525 correo: berni@gmail.com peso: 6.1 costo: 2000.0 número de orden: 69288658', '2017-05-22', 'mercadolibre@gmail.com');
 /*!40000 ALTER TABLE `auditoria` ENABLE KEYS */;
 
 -- Volcando estructura para tabla gjg.categoriapeso
@@ -75,8 +81,8 @@ CREATE TABLE IF NOT EXISTS `cliente` (
 /*!40000 ALTER TABLE `cliente` DISABLE KEYS */;
 INSERT INTO `cliente` (`idCliente`, `correo`, `clave`, `descripcion`, `rif`, `codPostal`) VALUES
 	(1, 'ebay@gmail.com', 'ef797c8118f02dfb649607dd5d3f8c7623048c9c063d532cc95c5ed7a898a64f', 'ebay C.A', '246359070', 1060),
-	(3, 'mercadolibre@gmail.com', 'ef797c8118f02dfb649607dd5d3f8c7623048c9c063d532cc95c5ed7a898a64f', 'Mercado Libre C.A', '112547540', 2014),
-	(4, 'mercadolibre2@gmail.com', 'ef797c8118f02dfb649607dd5d3f8c7623048c9c063d532cc95c5ed7a898a64f', '', '085458742', 1025),
+	(3, 'mercadolibre@gmail.com', 'ef797c8118f02dfb649607dd5d3f8c7623048c9c063d532cc95c5ed7a898a64f', 'Mercadolibre C.A', '112547540', 2014),
+	(4, 'tutiendaonline@gmail.com', 'ef797c8118f02dfb649607dd5d3f8c7623048c9c063d532cc95c5ed7a898a64f', 'Tu Tienda Online C.A', '085458742', 1025),
 	(17, 'hsitechnologies@gmail.com', 'ef797c8118f02dfb649607dd5d3f8c7623048c9c063d532cc95c5ed7a898a64f', 'HSI Tech', '12547854', 1060);
 /*!40000 ALTER TABLE `cliente` ENABLE KEYS */;
 
@@ -86,9 +92,9 @@ CREATE TABLE IF NOT EXISTS `direccion` (
   `codPostal` int(4) NOT NULL,
   `dirEnvio` varchar(255) NOT NULL,
   PRIMARY KEY (`idDireccion`)
-) ENGINE=InnoDB AUTO_INCREMENT=76 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=79 DEFAULT CHARSET=latin1;
 
--- Volcando datos para la tabla gjg.direccion: ~68 rows (aproximadamente)
+-- Volcando datos para la tabla gjg.direccion: ~69 rows (aproximadamente)
 /*!40000 ALTER TABLE `direccion` DISABLE KEYS */;
 INSERT INTO `direccion` (`idDireccion`, `codPostal`, `dirEnvio`) VALUES
 	(7, 1060, 'Los Palos Grandes, primera avenida, edf marialaya piso 6 apto. 27'),
@@ -159,7 +165,10 @@ INSERT INTO `direccion` (`idDireccion`, `codPostal`, `dirEnvio`) VALUES
 	(72, 1020, 'Parque Central, Caracas'),
 	(73, 1020, 'Parque Central, Caracas'),
 	(74, 1020, 'Parque Central, Caracas'),
-	(75, 1090, 'Los Naranjos, Caracas');
+	(75, 1090, 'Los Naranjos, Caracas'),
+	(76, 1090, 'Los Naranjos, Caracas'),
+	(77, 1090, 'Los Naranjos, Caracas'),
+	(78, 1090, 'Los Naranjos, Caracas');
 /*!40000 ALTER TABLE `direccion` ENABLE KEYS */;
 
 -- Volcando estructura para tabla gjg.encargo
@@ -187,9 +196,9 @@ CREATE TABLE IF NOT EXISTS `encargo` (
   CONSTRAINT `fk_encargo_cliente` FOREIGN KEY (`idCliente`) REFERENCES `cliente` (`idCliente`),
   CONSTRAINT `fk_encargo_direccion` FOREIGN KEY (`idDireccion`) REFERENCES `direccion` (`idDireccion`),
   CONSTRAINT `fk_encargo_estatus` FOREIGN KEY (`idEstatus`) REFERENCES `estatusencargo` (`idEstatus`)
-) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=46 DEFAULT CHARSET=latin1;
 
--- Volcando datos para la tabla gjg.encargo: ~29 rows (aproximadamente)
+-- Volcando datos para la tabla gjg.encargo: ~30 rows (aproximadamente)
 /*!40000 ALTER TABLE `encargo` DISABLE KEYS */;
 INSERT INTO `encargo` (`idEncargo`, `cedula`, `nombre`, `telefono`, `correo`, `peso`, `fechaCompra`, `fechaEstimada`, `costo`, `tracking`, `idDireccion`, `idEstatus`, `idCliente`, `idCategoriaPeso`) VALUES
 	(11, '24635907', 'Jose Gregorio Castro', '04140179052', 'josegregorio994@gmail.com', 3.5, '2017-04-03', '2017-04-02', 3000, '06647903', 7, 1, 17, 2),
@@ -214,14 +223,15 @@ INSERT INTO `encargo` (`idEncargo`, `cedula`, `nombre`, `telefono`, `correo`, `p
 	(30, '12545874', 'Petra Contreras', '04140179052', 'petra@gmail.com', 7.3, '2017-04-02', '2017-04-05', 5000, '88441907', 53, 2, 17, 3),
 	(31, '25584564', 'Jose Alvarez', '04145687485', 'jesema@gmail.com', 2.4, '2017-05-08', '2017-05-09', 1000, '47772774', 64, 1, 17, 1),
 	(32, '25584564', 'Jose Alvarez', '04145687485', 'jesema@gmail.com', 2.4, '2017-05-18', '2017-05-19', 1000, '25977748', 64, 3, 17, 1),
-	(33, '12545874', 'Carlos Gonzalez', '0416854854', 'carlitos@gmail.com', 5, '2017-05-18', '2017-05-19', 2000, '80359229', 66, 1, 1, 2),
-	(34, '14587454', 'Barbara Madrid', '0412568458', 'barbie@gmail.com', 1.2, '2017-05-18', '2017-05-21', 3000, '97051976', 67, 1, 1, 1),
-	(35, '6454875', 'Karla Contreras', '0414587458', 'karla@gmail.com', 5.6, '2017-05-18', '2017-05-23', 5000, '70980108', 68, 1, 3, 2),
-	(36, '6454875', 'Pedro Perez', '0412569856', 'pedrito@gmail.com', 7.4, '2017-05-18', '2017-05-22', 6000, '98638620', 69, 1, 3, 3),
+	(33, '12545874', 'Carlos Gonzalez', '0416854854', 'carlitos@gmail.com', 5, '2017-05-18', '2017-05-19', 2000, '80359229', 66, 2, 1, 2),
+	(34, '14587454', 'Barbara Madrid', '0412568458', 'barbie@gmail.com', 1.2, '2017-05-18', '2017-05-21', 3000, '97051976', 67, 3, 1, 1),
+	(35, '6454875', 'Karla Contreras', '0414587458', 'karla@gmail.com', 5.6, '2017-05-18', '2017-05-23', 5000, '70980108', 68, 3, 3, 2),
+	(36, '6454875', 'Pedro Perez', '0412569856', 'pedrito@gmail.com', 7.4, '2017-05-18', '2017-05-22', 6000, '98638620', 69, 4, 3, 3),
 	(37, '9874562', 'Aparicio Pena', '0414256985', 'aparicio@gmail.com', 2.5, '2017-05-18', '2017-05-19', 1000, '43232065', 70, 1, 3, 1),
-	(38, '14568965', 'Miguel Silva', '0412545856', 'miguel@gmail.com', 9, '2017-05-18', '2017-05-19', 3000, '68266315', 71, 1, 3, 3),
-	(41, '10808934', 'Jensy Lazo', '04166046105', 'jensy@gmail.com', 2, '2017-05-18', '2017-05-19', 1000, '06915886', 72, 1, 3, 1),
-	(42, '6784585', 'Bernardo Fuentes', '04147856525', 'berni@gmail.com', 6.1, '2017-05-18', '2017-05-19', 2000, '54973197', 75, 1, 3, 2);
+	(38, '14568965', 'Miguel Silva', '0412545856', 'miguel@gmail.com', 9, '2017-05-18', '2017-05-19', 3000, '68266315', 71, 3, 3, 3),
+	(41, '10808934', 'Jensy Lazo', '04166046105', 'jensy@gmail.com', 2, '2017-05-18', '2017-05-19', 1000, '06915886', 72, 3, 3, 1),
+	(42, '6784585', 'Bernardo Fuentes', '04147856525', 'berni@gmail.com', 6.1, '2017-05-18', '2017-05-19', 2000, '54973197', 75, 3, 3, 2),
+	(45, '6784585', 'Bernardo Fuentes', '04147856525', 'berni@gmail.com', 6.1, '2017-05-22', '2017-05-23', 2000, '69288658', 75, 1, 3, 2);
 /*!40000 ALTER TABLE `encargo` ENABLE KEYS */;
 
 -- Volcando estructura para tabla gjg.estadofactura
@@ -271,17 +281,53 @@ CREATE TABLE IF NOT EXISTS `factura` (
   CONSTRAINT `fk_factura_cliente` FOREIGN KEY (`idCliente`) REFERENCES `cliente` (`idCliente`),
   CONSTRAINT `fk_factura_encargo` FOREIGN KEY (`idEncargo`) REFERENCES `encargo` (`idEncargo`),
   CONSTRAINT `fk_factura_estadoFactura` FOREIGN KEY (`idEstadoFactura`) REFERENCES `estadofactura` (`idEstadoFactura`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=latin1;
 
--- Volcando datos para la tabla gjg.factura: ~4 rows (aproximadamente)
+-- Volcando datos para la tabla gjg.factura: ~5 rows (aproximadamente)
 /*!40000 ALTER TABLE `factura` DISABLE KEYS */;
 INSERT INTO `factura` (`idFactura`, `fechaCancelacion`, `fechaVencimiento`, `monto`, `idCliente`, `idEstadoFactura`, `idEncargo`) VALUES
 	(1, '2017-05-16', '2017-05-29', 6000, 3, 3, 36),
 	(2, '2017-05-16', '2017-05-31', 1000, 3, 3, 37),
 	(3, '2017-05-17', '2017-06-02', 3000, 3, 3, 38),
 	(4, NULL, '2017-06-02', 1000, 3, 1, 41),
-	(5, NULL, '2017-05-17', 2000, 3, 2, 42);
+	(5, NULL, '2017-05-17', 2000, 3, 2, 42),
+	(8, NULL, '2017-06-06', 2000, 3, 1, 45);
 /*!40000 ALTER TABLE `factura` ENABLE KEYS */;
+
+-- Volcando estructura para tabla gjg.historial
+CREATE TABLE IF NOT EXISTS `historial` (
+  `idHistorial` int(11) NOT NULL AUTO_INCREMENT,
+  `fecha` date NOT NULL,
+  `locacion` varchar(200) NOT NULL,
+  `idEncargo` int(11) NOT NULL,
+  PRIMARY KEY (`idHistorial`),
+  KEY `fk_historial_encargo` (`idEncargo`),
+  CONSTRAINT `fk_historial_encargo` FOREIGN KEY (`idEncargo`) REFERENCES `encargo` (`idEncargo`)
+) ENGINE=InnoDB AUTO_INCREMENT=53 DEFAULT CHARSET=latin1;
+
+-- Volcando datos para la tabla gjg.historial: ~19 rows (aproximadamente)
+/*!40000 ALTER TABLE `historial` DISABLE KEYS */;
+INSERT INTO `historial` (`idHistorial`, `fecha`, `locacion`, `idEncargo`) VALUES
+	(2, '2017-05-19', 'oficina GJG la Urbina', 38),
+	(6, '2017-05-19', 'entregado al mototaxista ', 38),
+	(9, '2017-05-19', 'oficina GJC, paquete chequeado', 36),
+	(10, '2017-05-20', 'aragua', 36),
+	(11, '2017-05-21', 'barquisimeto', 36),
+	(18, '2017-05-21', 'Producto Entregado', 36),
+	(21, '2017-05-21', 'oficina GJG la Urbina', 41),
+	(22, '2017-05-21', 'Producto Entregado', 41),
+	(27, '2017-05-21', 'altamira', 41),
+	(29, '2017-05-21', 'altamira', 41),
+	(31, '2017-05-21', 'altamira', 41),
+	(33, '2017-05-21', 'plaza venezuela', 41),
+	(35, '2017-05-21', 'plaza venezuela', 41),
+	(37, '2017-05-21', 'la urbina', 34),
+	(39, '2017-05-21', 'la urbina', 34),
+	(41, '2017-05-21', 'guarenas', 34),
+	(47, '2017-05-21', 'la urbina', 42),
+	(49, '2017-05-21', 'la urbina', 42),
+	(51, '2017-05-21', 'estado bolivar, avenida intercomunal', 35);
+/*!40000 ALTER TABLE `historial` ENABLE KEYS */;
 
 -- Volcando estructura para vista gjg.view_clientes
 -- Creando tabla temporal para superar errores de dependencia de VIEW
@@ -336,6 +382,15 @@ CREATE TABLE `view_facturas_vigentes` (
 	`estado` VARCHAR(50) NOT NULL COLLATE 'latin1_swedish_ci'
 ) ENGINE=MyISAM;
 
+-- Volcando estructura para vista gjg.view_historial_paquete
+-- Creando tabla temporal para superar errores de dependencia de VIEW
+CREATE TABLE `view_historial_paquete` (
+	`fecha` DATE NOT NULL,
+	`locacion` VARCHAR(200) NOT NULL COLLATE 'latin1_swedish_ci',
+	`idCliente` INT(11) NOT NULL,
+	`idEncargo` INT(11) NOT NULL
+) ENGINE=MyISAM;
+
 -- Volcando estructura para vista gjg.view_solicitudes
 -- Creando tabla temporal para superar errores de dependencia de VIEW
 CREATE TABLE `view_solicitudes` (
@@ -347,7 +402,8 @@ CREATE TABLE `view_solicitudes` (
 	`fechaEstimada` DATE NOT NULL,
 	`estatus` VARCHAR(30) NOT NULL COLLATE 'latin1_swedish_ci',
 	`direccion` VARCHAR(255) NOT NULL COLLATE 'latin1_swedish_ci',
-	`codPostal` INT(4) NOT NULL
+	`codPostal` INT(4) NOT NULL,
+	`idCliente` INT(11) NOT NULL
 ) ENGINE=MyISAM;
 
 -- Volcando estructura para vista gjg.view_solicitudes_despachadas
@@ -407,10 +463,20 @@ FROM factura f, cliente c, estadofactura e
 WHERE f.idCliente = c.idCliente AND f.idEstadoFactura = e.idEstadoFactura AND f.idEstadoFactura = 1
 ORDER BY f.fechaCancelacion ;
 
+-- Volcando estructura para vista gjg.view_historial_paquete
+-- Eliminando tabla temporal y crear estructura final de VIEW
+DROP TABLE IF EXISTS `view_historial_paquete`;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` VIEW `view_historial_paquete` AS SELECT h.fecha, h.locacion, e.idCliente, h.idEncargo
+FROM historial h, encargo e
+WHERE h.idEncargo = e.idEncargo
+
+
+#SELECT * FROM view_historial_paquete WHERE idCliente = 3 AND idEncargo = 38 ;
+
 -- Volcando estructura para vista gjg.view_solicitudes
 -- Eliminando tabla temporal y crear estructura final de VIEW
 DROP TABLE IF EXISTS `view_solicitudes`;
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` VIEW `view_solicitudes` AS SELECT DISTINCT e.tracking, e.nombre, c.descripcion comercio, e.costo, e.fechaCompra, e.fechaEstimada, est.descripcion estatus, d.dirEnvio direccion, d.codPostal
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` VIEW `view_solicitudes` AS SELECT DISTINCT e.tracking, e.nombre, c.descripcion comercio, e.costo, e.fechaCompra, e.fechaEstimada, est.descripcion estatus, d.dirEnvio direccion, d.codPostal, e.idCliente
 FROM encargo e, cliente c, estatusencargo est, direccion d
 WHERE e.idEstatus = est.idEstatus AND e.idCliente = c.idCliente AND e.idDireccion = d.idDireccion ;
 
