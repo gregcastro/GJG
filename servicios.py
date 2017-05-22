@@ -327,6 +327,30 @@ def get_solicitudes_admin():
 	return render_template("index.html")
 
 
+@app.route('/get-logs')
+def get_logs_admin():
+	if(session.get('logged_in') and session.get('logged_in')=='admin'):
+
+		desde = str(request.args['desde'])
+		hasta = str(request.args['hasta'])
+
+		print(desde)
+		print(hasta)
+
+		# fecha = new Date( request.args['desde'] )
+		# print ('fecha = ', fecha)
+
+		con = mysql.connect()
+		cursor = con.cursor()
+		cursor.execute("SELECT * FROM view_logs WHERE fecha BETWEEN %s AND %s ", (desde, hasta) )		
+		
+		logs = cursor.fetchall()
+		print(logs)
+		data = json.dumps(logs)
+
+		return '{}'.format(data)
+	return render_template("index.html")
+
 @app.route('/estatusEncargo')
 def get_estatus_encargo():
 	if(session.get('logged_in') and session.get('logged_in')=='admin'):
@@ -668,6 +692,11 @@ def pdf_generate():
 	return response
 
 
+@app.route('/logs')
+def gestion_logs():
+	if(session.get('logged_in') and session.get('logged_in')=='admin'):
+		return render_template("logs.html", admin=session.get('logged_in'))
+	return render_template("index.html")
 
 #===== Fin Adminstrador =====#
 

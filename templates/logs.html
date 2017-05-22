@@ -1,0 +1,166 @@
+{% extends "layout.html" %}
+
+{% block extra_head %} 
+<link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-datetimepicker.min.css') }}">
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="{{ url_for('static', filename='js/moment.js') }}"></script>
+<script src="{{ url_for('static', filename='js/bootstrap-datetimepicker.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/logs.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+
+<!-- Page Content -->
+<div id="page-content-wrapper" class="w3-main" style="margin-left:340px;margin-right:40px;">
+    <div class="container-fluid">
+        
+      <!-- Variable que indica si se esta en una gestion de solicitud de usuario o de administrador -->
+      <input type="text" hidden="true" value="{{tipo_user}}" id="tipo_user">
+
+    	<div class="row">
+      
+	        <div class="col-md-6">
+
+	            <div class="row">
+
+	                <div class="col-md-9">
+
+	                    <div class="w3-container" style="margin-top:80px" id="showcase">
+	                        <h1 class="w3-jumbo"><b>Distribuidor GJG</b></h1>
+	                        <h1 class="w3-xxxlarge w3-text-red"><b>Logs del Sistema.</b></h1>
+	                        <hr style="width:50px;border:5px solid red" class="w3-round">
+	                                                     
+	                    </div>
+
+	                </div>
+
+	                <div class="col-md-3">
+
+	                    <img style="margin-top:80px" width="180" height="180" src="{{ url_for('static', filename='imagenes/logo.png') }}"">
+
+	                </div>
+
+	            </div>                     
+
+	        </div>
+
+	        <div class="col-md-6"></div>
+	                
+	    </div></br>
+
+        <div class="row">
+               
+            <!-- Indicar que esta es la fecha en que se realizo la compra -->
+            <!-- Calendarios -->
+		    <div class='col-sm-2'>
+		        <div class="form-group">
+		            <div class='input-group date'>
+		                <input id="fecha1" type='text' placeholder="Fecha Inicial" class="form-control datepicker" />
+		                <span class="input-group-addon">
+		                    <span id="calendar1" class="glyphicon glyphicon-calendar"></span>
+		                </span>
+		            </div>
+		        </div>
+		    </div>
+		    <div class='col-sm-2 text-right'>
+		        <div class="form-group">
+		            <div class='input-group date'>
+		                <input id="fecha2" type='text' placeholder="Fecha Final" class="form-control datepicker" />
+		                <span class="input-group-addon">
+		                    <span id="calendar2" class="glyphicon glyphicon-calendar"></span>
+		                </span>
+		            </div>
+		        </div>
+		    </div>
+
+    		<div class="col-md-3">		  		
+    		</div>
+
+    		<div class="col-sm-2 text-right">
+		    	<button class="btn btn-primary" type="submit" id="botonBuscar">Buscar</button></br></br>
+        	</div>		  		
+
+        </div> <!-- end row -->
+
+        <div class="row">
+    			
+    			<div class="col-md-9">
+    				<table class="table table-bordered table-hover" id='tab_logic'>
+    				    <thead>
+    				      <tr class="danger">
+    				        <th>Fecha</th>
+    				        <th>Usuario</th>
+    				        <th>Petición</th>
+    				        <th>Descripción</th>
+    				      </tr>
+    				    </thead>
+    				    <tbody>
+
+    				    </tbody>
+    				  </table>
+    			</div>
+
+		</div> <!-- end row -->
+
+    </div>
+</div>
+<!-- /#page-content-wrapper -->
+
+<!-- modal -->
+<div id="dialog" title="¡Atención!">
+  <p>Los campos de fecha son requeridos.</p>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+
+    	$("#dialog").dialog({
+          autoOpen : false,
+          modal : true,
+          show : "blind",
+          hide : "blind",
+          my: "center",
+          at: "center",
+          of: window,
+          buttons: {
+            "Aceptar": function () {
+              $(this).dialog("close");
+            }
+          }  
+        });
+
+    	$("#calendar1").click(function() {
+          $("#fecha1").focus();
+        });
+
+        $("#calendar2").click(function() {
+          $("#fecha2").focus();
+        });
+
+    	$('.datepicker').datepicker();
+        $.datepicker.regional['es'] = {
+          closeText: 'Cerrar',
+          prevText: '<Ant',
+          nextText: 'Sig>',
+          currentText: 'Hoy',
+          monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+          monthNamesShort: ['Ene','Feb','Mar','Abr', 'May','Jun','Jul','Ago','Sep', 'Oct','Nov','Dic'],
+          dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+          dayNamesShort: ['Dom','Lun','Mar','Mié','Juv','Vie','Sáb'],
+          dayNamesMin: ['Do','Lu','Ma','Mi','Ju','Vi','Sá'],
+          onSelect: function() {
+		    $('#fecha2').datepicker('option', 'minDate', $("#fecha1").datepicker("getDate"));
+		  },
+          weekHeader: 'Sm',
+          dateFormat: 'dd/mm/yy',
+          firstDay: 1,
+          isRTL: false,
+          showMonthAfterYear: false,
+          yearSuffix: ''
+        };
+        $.datepicker.setDefaults($.datepicker.regional['es']);
+    });
+</script>
+
+{% endblock %}
