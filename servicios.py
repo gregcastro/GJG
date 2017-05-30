@@ -252,7 +252,7 @@ def get_solicitudes():
 
 
 
-#===== Adminstrador =====#
+#===== Administrador =====#
 @app.route('/rastrear_tracking')
 def rastrear_tracking():
 	tracking = request.args['tracking']
@@ -274,33 +274,33 @@ def rastrear_tracking():
 		return '{}'.format(data)
 
 	elif (session.get('logged_in')):
-		print('estoy e logged_in')
 		cursor.execute("SELECT idEncargo FROM encargo WHERE tracking=%s ", tracking )
 		idEncargo = cursor.fetchone()
-		idEncargo = idEncargo[0]
+		data = []
+		if idEncargo != None:
+			idEncargo = idEncargo[0]
 
-		try:
-			decod = jwt.decode(session.get('logged_in'), 'secret')
-		except jwt.InvalidTokenError:
-			return errors['ErrorAlDecodificar'], 412
+			try:
+				decod = jwt.decode(session.get('logged_in'), 'secret')
+			except jwt.InvalidTokenError:
+				return errors['ErrorAlDecodificar'], 412
 
-		print(decod['sub'])
+			print(decod['sub'])
 
-		cursor.execute("SELECT idCliente FROM cliente WHERE correo=%s", (decod['sub']))
-		idCliente = cursor.fetchone()
-		idCliente = idCliente[0]
+			cursor.execute("SELECT idCliente FROM cliente WHERE correo=%s", (decod['sub']))
+			idCliente = cursor.fetchone()
+			idCliente = idCliente[0]
 
+			cursor.execute("SELECT * FROM view_historial_paquete WHERE idCliente=%s AND idEncargo=%s", (idCliente, idEncargo) )
+			historial = cursor.fetchall()
 
-		cursor.execute("SELECT * FROM view_historial_paquete WHERE idCliente=%s AND idEncargo=%s", (idCliente, idEncargo) )
-		historial = cursor.fetchall()
+			print(historial)
 
-		print(historial)
+			data = json.dumps(historial)
 
-		data = json.dumps(historial)
-
-		descripcion = 'Rastreó el número de orden ' + tracking
-		cursor.execute("INSERT INTO auditoria (fecha, usuario, descripcion) VALUES(%s,%s,%s)", (date.today(), decod['sub'], descripcion) )
-		con.commit()
+			descripcion = 'Rastreó el número de orden ' + tracking
+			cursor.execute("INSERT INTO auditoria (fecha, usuario, descripcion) VALUES(%s,%s,%s)", (date.today(), decod['sub'], descripcion) )
+			con.commit()
 
 		return '{}'.format(data)
 
