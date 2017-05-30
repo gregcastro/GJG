@@ -474,14 +474,36 @@ def pdf_generate():
 		body = """
 				<!DOCTYPE html>
 				<html>
+				<style>
+
+					table {
+					    border-collapse: collapse;
+					    width: 100%;					    
+					}
+
+					td, th {
+					    border: 1px solid #dddddd;
+					    padding: 15px;
+					}
+
+					th {
+						text-align: center;
+					}
+
+					tr:nth-child(even) {
+					    background-color: #dddddd;
+					}
+
+				</style>
 				<head>
+					<img src="https://preview.ibb.co/fKfW3F/gjg.png">
 					<title>Solicitudes Despachadas</title>
 					<meta name="pdfkit-page-size" content="Legal"/>
 					<meta name="pdfkit-orientation" content="Landscape"/>
 					<meta charset="utf-8">
 				</head>
 				<body>
-				<center> <h1>Solicitudes Despachadas</h1> </center>
+				<center> <h2>Solicitudes Despachadas</h2> </center>
 		    	<table width="100%">
 				  <tr>
 				    <th># Orden</th>
@@ -522,14 +544,36 @@ def pdf_generate():
 		body = """
 				<!DOCTYPE html>
 				<html>
+				<style>
+
+					table {
+					    border-collapse: collapse;
+					    width: 100%;					    
+					}
+
+					td, th {
+					    border: 1px solid #dddddd;
+					    padding: 15px;
+					}
+
+					th {
+						text-align: center;
+					}
+
+					tr:nth-child(even) {
+					    background-color: #dddddd;
+					}
+
+				</style>
 				<head>
+					<img src="https://preview.ibb.co/fKfW3F/gjg.png">
 					<title>Solicitudes Pendientes</title>
 					<meta name="pdfkit-page-size" content="Legal"/>
 					<meta name="pdfkit-orientation" content="Landscape"/>
 					<meta charset="utf-8">
 				</head>
 				<body>
-				<center> <h1>Solicitudes Pendientes</h1> </center>
+				<center> <h2>Solicitudes Pendientes</h2> </center>
 		    	<table width="100%">
 				  <tr>
 				    <th># Orden</th>
@@ -564,14 +608,36 @@ def pdf_generate():
 		body = """
 				<!DOCTYPE html>
 				<html>
+				<style>
+
+					table {
+					    border-collapse: collapse;
+					    width: 100%;					    
+					}
+
+					td, th {
+					    border: 1px solid #dddddd;
+					    padding: 15px;
+					}
+
+					th {
+						text-align: center;
+					}
+
+					tr:nth-child(even) {
+					    background-color: #dddddd;
+					}
+
+				</style>
 				<head>
+					<img src="https://preview.ibb.co/fKfW3F/gjg.png">
 					<title>Clientes</title>
 					<meta name="pdfkit-page-size" content="Legal"/>
 					<meta name="pdfkit-orientation" content="Landscape"/>
 					<meta charset="utf-8">
 				</head>
 				<body>
-				<center> <h1>Clientes</h1> </center>
+				<center> <h2>Clientes</h2> </center>
 		    	<table width="100%">
 				  <tr>
 				    <th>Nombre</th>
@@ -600,14 +666,36 @@ def pdf_generate():
 		body = """
 				<!DOCTYPE html>
 				<html>
+				<style>
+
+					table {
+					    border-collapse: collapse;
+					    width: 100%;					    
+					}
+
+					td, th {
+					    border: 1px solid #dddddd;
+					    padding: 15px;
+					}
+
+					th {
+						text-align: center;
+					}
+
+					tr:nth-child(even) {
+					    background-color: #dddddd;
+					}
+
+				</style>
 				<head>
+					<img src="https://preview.ibb.co/fKfW3F/gjg.png">
 					<title>Destinos</title>
 					<meta name="pdfkit-page-size" content="Legal"/>
 					<meta name="pdfkit-orientation" content="Landscape"/>
 					<meta charset="utf-8">
 				</head>
 				<body>
-				<center> <h1>Destinos</h1> </center>
+				<center> <h2>Destinos</h2> </center>
 		    	<table width="100%">
 				  <tr>
 				    <th>Código Postal</th>
@@ -632,12 +720,34 @@ def pdf_generate():
 		body = """
 				<!DOCTYPE html>
 				<html>
+				<style>
+
+					table {
+					    border-collapse: collapse;
+					    width: 100%;					    
+					}
+
+					td, th {
+					    border: 1px solid #dddddd;
+					    padding: 15px;
+					}
+
+					th {
+						text-align: center;
+					}
+
+					tr:nth-child(even) {
+					    background-color: #dddddd;
+					}
+
+				</style>
 				<head>
+					<img src="https://preview.ibb.co/fKfW3F/gjg.png">
 					<title>Facturas Canceladas</title>
 					<meta charset="utf-8">
 				</head>
 				<body>
-				<center> <h1>Facturas Canceladas</h1> </center>
+				<center> <h2>Facturas Canceladas</h2> </center>
 		    	<table width="100%">
 				  <tr>
 				    <th>Fecha de Cancelación</th>
@@ -664,12 +774,34 @@ def pdf_generate():
 		body = """
 				<!DOCTYPE html>
 				<html>
+				<style>
+
+					table {
+					    border-collapse: collapse;
+					    width: 100%;					    
+					}
+
+					td, th {
+					    border: 1px solid #dddddd;
+					    padding: 15px;
+					}
+
+					th {
+						text-align: center;
+					}
+
+					tr:nth-child(even) {
+					    background-color: #dddddd;
+					}
+
+				</style>
 				<head>
+					<img src="https://preview.ibb.co/fKfW3F/gjg.png">
 					<title>Facturas Vigentes</title>
 					<meta charset="utf-8">
 				</head>
 				<body>
-				<center> <h1>Facturas Vigentes</h1> </center>
+				<center> <h2>Facturas Vigentes</h2> </center>
 		    	<table width="100%">
 				  <tr>
 				    <th>Fecha de Vencimiento</th>
@@ -694,12 +826,34 @@ def pdf_generate():
 		body = """
 				<!DOCTYPE html>
 				<html>
+				<style>
+
+					table {
+					    border-collapse: collapse;
+					    width: 100%;					    
+					}
+
+					td, th {
+					    border: 1px solid #dddddd;
+					    padding: 15px;
+					}
+
+					th {
+						text-align: center;
+					}
+
+					tr:nth-child(even) {
+					    background-color: #dddddd;
+					}
+
+				</style>
 				<head>
+					<img src="https://preview.ibb.co/fKfW3F/gjg.png">
 					<title>Facturas Vencidas</title>
 					<meta charset="utf-8">
 				</head>
 				<body>
-				<center> <h1>Facturas Vencidas</h1> </center>
+				<center> <h2>Facturas Vencidas</h2> </center>
 		    	<table width="100%">
 				  <tr>
 				    <th>Fecha de Vencimiento</th>
