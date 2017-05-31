@@ -85,11 +85,10 @@
 					</div>
 					<div class="col-md-6">
 						<p><label for="pass">Contraseña:</label></p>
-						<p><input name="password" type="password" id="pass" class="form-control" placeholder="Contraseña"/ required="true"></p>
+						<p><input name="password" type="password" id="pass" class="form-control" placeholder="Contraseña"/ required="true" pattern=".{8,}" required title="8 caracteres mínimo"></p>
 						
 						<p><label for="repass">Repetir Contraseña:</label></p>
-						<p><input name="repassword" type="password" id="repass" class="form-control" placeholder="Repite contraseña" data-match="#pass" required="true"/></p>
-		
+						<p><input name="repassword" type="password" id="repass" class="form-control" placeholder="Repite contraseña" data-match="#pass" required="true" pattern=".{8,}" required title="8 caracteres mínimo"></p>		
 
 						<p><label for="codPostal">Código Postal:</label></p>
 						<p><input name="codPostal" type="text" id="codPostal" class="form-control" placeholder="Ej. 1060" autofocus=""/ ></p>
