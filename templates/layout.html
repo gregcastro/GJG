@@ -44,7 +44,8 @@
     <!-- /#wrapper -->
 
     <!-- Sidebar naranja -->
-    <nav class="w3-sidebar w3-red w3-collapse w3-top w3-large w3-padding" style="z-index:3;width:300px;font-weight:bold;" id="menuSidebar"><br>
+    <nav class="w3-sidebar w3-red w3-collapse w3-top w3-large w3-padding" style="z-index:3;width:300px;font-weight:bold;" id="mySidebar"><br>
+      <a href="javascript:void(0)" onclick="w3_close()" class="w3-button w3-hide-large w3-display-topleft" style="width:100%;font-size:22px; color:white;">☰</a>
       <div class="w3-container">
         <a href="/"><h3 id="titleSideBar" class="w3-padding-64" style="color:white;"><b> <span class="glyphicon glyphicon-home" aria-hidden="true"></span> Distribuidor GJG </b></h3></a>
       </div>
@@ -77,6 +78,12 @@
       </div>
     </nav>
     <!-- Fin Sidebar naranja -->
+
+    <!-- Hamburguesa -->
+    <header class="w3-container w3-top w3-hide-large w3-red w3-xlarge w3-padding">
+      <a href="javascript:void(0)" class="w3-button w3-red w3-margin-right" onclick="w3_open()">☰</a>
+    </header>
+    <div class="w3-overlay w3-hide-large" onclick="w3_close()" style="cursor:pointer" title="close side menu" id="myOverlay"></div>
 
     <!-- modal LOGIN -->
     <div class="modal fade" id="LoginModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -150,6 +157,18 @@
         e.preventDefault();
         $("#wrapper").toggleClass("toggled");
     });
+
+    // Funciones para abrir y cerrar hamburguesa
+    function w3_open() {
+        document.getElementById("mySidebar").style.display = "block";
+        document.getElementById("myOverlay").style.display = "block";
+    }
+     
+    function w3_close() {
+        document.getElementById("mySidebar").style.display = "none";
+        document.getElementById("myOverlay").style.display = "none";
+    }
+
     </script>
 
 
